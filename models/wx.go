@@ -9,7 +9,7 @@ import (
 
 type Weixin struct {
 	ID        int64  `xorm:"pk autoincr" json:"id"`
-	WxId      string `xorm:"not null default '' varchar(128) unique" json:"wxId"`
+	WxId      string `xorm:"not null default '' varchar(128) index" json:"wxId"`
 	Wechat    string `xorm:"not null default '' varchar(128) unique" json:"wechat"`
 	NickName  string `xorm:"not null default '' varchar(256)" json:"nickName"`
 	CreatedAt int64  `xorm:"not null default 0 int" json:"createAt"`
