@@ -17,6 +17,14 @@ type WeixinVerifySetting struct {
 	UpdatedAt      int64  `xorm:"not null default 0 int" json:"-"`
 }
 
+type WeixinVerify struct {
+	ID                    int64 `xorm:"pk autoincr" json:"id"`
+	WeixinId              int64 `xorm:"not null default 0 int index" json:"weixinId"`
+	WeixinVerifySettingId int64 `xorm:"not null default 0 int" json:"weixinVerifySettingId"`
+	CreatedAt             int64 `xorm:"not null default 0 int" json:"createAt"`
+	UpdatedAt             int64 `xorm:"not null default 0 int" json:"-"`
+}
+
 func CreateWeixinVerifySetting(info *WeixinVerifySetting) error {
 	if info.WeixinId == 0 {
 		return fmt.Errorf("wechat id cannot be nil.")
@@ -55,7 +63,32 @@ func GetWeixinVerifySetting(info *WeixinVerifySetting) (bool, error) {
 		return false, err
 	}
 	if !has {
-		holmes.Debug("cannot find weixin verify setting from weixin_id[%s]", info.WeixinId)
+		holmes.Debug("cannot find weixin verify setting from weixin_id[%d]", info.WeixinId)
+		return false, nil
+	}
+	return true, nil
+}
+
+func GetWeixinVerifySettingDetail(weixinId int64) (*WeixinVerifySetting, error) {
+	setting := new(WeixinVerifySetting)
+	has, err := x.Sql("select * from weixin_verify_setting where id = (select weixin_verify_setting_id from weixin_verify where weixin_id = ? limit 1)", weixinId).Get(setting)
+	if err != nil {
+		return nil, err
+	}
+	if !has {
+		holmes.Debug("cannot find weixin verify setting from weixin_id[%d]", weixinId)
+		return nil, nil
+	}
+	return setting, nil
+}
+
+func GetWeixinVerifySettingFromId(info *WeixinVerifySetting) (bool, error) {
+	has, err := x.Id(info.ID).Get(info)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		holmes.Debug("cannot find weixin verify setting from id[%d]", info.ID)
 		return false, nil
 	}
 	return true, nil
@@ -70,6 +103,50 @@ func GetWeixinVerifySettingList(weixinId int64) ([]WeixinVerifySetting, error) {
 	return list, nil
 }
 
+func CreateWeixinVerify(info *WeixinVerify) error {
+	if info.WeixinId == 0 {
+		return fmt.Errorf("wechat id cannot be nil.")
+	}
+
+	now := time.Now().Unix()
+	info.CreatedAt = now
+	info.UpdatedAt = now
+
+	_, err := x.Insert(info)
+	if err != nil {
+		holmes.Error("create robot weixin verify error: %v", err)
+		return err
+	}
+	holmes.Info("create robot weixin verify[%v] success.", info)
+
+	return nil
+}
+
+func DelWeixinVerify(info *WeixinVerify) error {
+	if info.ID == 0 {
+		return fmt.Errorf("del id cannot be nil.")
+	}
+	_, err := x.ID(info.ID).Delete(info)
+	if err != nil {
+		holmes.Error("del weixin verify error: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func GetWeixinVerify(info *WeixinVerify) (bool, error) {
+	has, err := x.Where("weixin_id = ?", info.WeixinId).Get(info)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		holmes.Debug("cannot find weixin verify from weixin_id[%d]", info.WeixinId)
+		return false, nil
+	}
+	return true, nil
+}
+
 type WeixinKeywordSetting struct {
 	ID        int64  `xorm:"pk autoincr" json:"id"`
 	WeixinId  int64  `xorm:"not null default 0 int index" json:"weixinId"`
@@ -80,6 +157,14 @@ type WeixinKeywordSetting struct {
 	Interval  int64  `xorm:"not null default 0 int" json:"interval"`
 	CreatedAt int64  `xorm:"not null default 0 int" json:"createAt"`
 	UpdatedAt int64  `xorm:"not null default 0 int" json:"-"`
+}
+
+type WeixinKeyword struct {
+	ID                     int64 `xorm:"pk autoincr" json:"id"`
+	WeixinId               int64 `xorm:"not null default 0 int index" json:"weixinId"`
+	WeixinKeywordSettingId int64 `xorm:"not null default 0 int" json:"weixinKeywordSettingId"`
+	CreatedAt              int64 `xorm:"not null default 0 int" json:"createAt"`
+	UpdatedAt              int64 `xorm:"not null default 0 int" json:"-"`
 }
 
 func CreateWeixinKeywordSetting(info *WeixinKeywordSetting) error {
@@ -114,6 +199,15 @@ func DelWeixinKeywordSetting(info *WeixinKeywordSetting) error {
 	return nil
 }
 
+func GetWeixinKeywordSettingList(weixinId int64) ([]WeixinKeywordSetting, error) {
+	var list []WeixinKeywordSetting
+	err := x.Sql("select * from weixin_keyword_setting where id in (select weixin_keyword_setting_id from weixin_keyword where weixin_id = ?)", weixinId).Find(&list)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
 func GetWeixinKeywordSetting(weixinId int64) ([]WeixinKeywordSetting, error) {
 	var list []WeixinKeywordSetting
 	err := x.Where("weixin_id = ?", weixinId).Find(&list)
@@ -121,4 +215,48 @@ func GetWeixinKeywordSetting(weixinId int64) ([]WeixinKeywordSetting, error) {
 		return nil, err
 	}
 	return list, nil
+}
+
+func CreateWeixinKeyword(info *WeixinKeyword) error {
+	if info.WeixinId == 0 {
+		return fmt.Errorf("wechat id cannot be nil.")
+	}
+	
+	now := time.Now().Unix()
+	info.CreatedAt = now
+	info.UpdatedAt = now
+	
+	_, err := x.Insert(info)
+	if err != nil {
+		holmes.Error("create robot weixin keyword error: %v", err)
+		return err
+	}
+	holmes.Info("create robot weixin keyword[%v] success.", info)
+	
+	return nil
+}
+
+func DelWeixinKeyword(info *WeixinKeyword) error {
+	if info.ID == 0 {
+		return fmt.Errorf("del id cannot be nil.")
+	}
+	_, err := x.ID(info.ID).Delete(info)
+	if err != nil {
+		holmes.Error("del weixin keyword error: %v", err)
+		return err
+	}
+	
+	return nil
+}
+
+func GetWeixinKeyword(info *WeixinKeyword) (bool, error) {
+	has, err := x.Where("weixin_id = ?", info.WeixinId).Get(info)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		holmes.Debug("cannot find weixin keyword from weixin_id[%d]", info.WeixinId)
+		return false, nil
+	}
+	return true, nil
 }

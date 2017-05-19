@@ -4,3 +4,9 @@
 2017/05/19 10:31:56  INFO [models.CreateWeixinKeywordSetting](wx_setting.go:99) create robot weixin keyword setting[&{4 1  3  [{"msgType":1,"content":"你好啊","msgSource":""},{"msgType":42,"content":"gh_cb645007fc9e","msgSource":""}] 3 1495161116 1495161116}] success.
 2017/05/19 10:32:20  INFO [controller.(*Logic).Run](logic.go:49) server starting on[:6565]..
 2017/05/19 10:32:38  INFO [models.CreateWeixinKeywordSetting](wx_setting.go:99) create robot weixin keyword setting[&{5 1 people 3  [{"msgType":1,"content":"你好啊","msgSource":""},{"msgType":42,"content":"gh_cb645007fc9e","msgSource":""}] 3 1495161158 1495161158}] success.
+2017/05/19 17:42:44  INFO [controller.(*Logic).Run](logic.go:49) server starting on[:6565]..
+2017/05/19 17:51:50  INFO [controller.(*Logic).Run](logic.go:51) server starting on[:6565]..
+2017/05/19 17:52:11  INFO [models.CreateWeixin](wx.go:33) create robot weixin[&{2  heba0539517395zx  1495187531 1495187531}] success.
+2017/05/19 17:53:50  INFO [models.CreateWeixinVerify](wx_setting.go:120) create robot weixin verify[&{1 2 1 1495187630 1495187630}] success.
+2017/05/19 17:54:30  INFO [models.CreateWeixinKeyword](wx_setting.go:234) create robot weixin keyword[&{1 2 1 1495187670 1495187670}] success.
+2017/05/19 17:57:09  INFO [controller.(*Logic).Run](logic.go:51) server starting on[:6565]..

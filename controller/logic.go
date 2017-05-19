@@ -32,7 +32,9 @@ func (self *Logic) init() {
 
 	http.HandleFunc("/weixin/create_weixin", self.CreateWeixin)
 	http.HandleFunc("/weixin/create_verify_setting", self.CreateWeixinVerifySetting)
+	http.HandleFunc("/weixin/create_verify", self.CreateWeixinVerify)
 	http.HandleFunc("/weixin/create_keyword_setting", self.CreateWeixinKeywordSetting)
+	http.HandleFunc("/weixin/create_keyword", self.CreateWeixinKeyword)
 	http.HandleFunc("/weixin/get_setting", self.GetWeixinSetting)
 }
 

@@ -33,7 +33,9 @@ func InitDB(cfg *config.Config) {
 	// sync tables
 	if err = x.Sync2(new(Weixin),
 		new(WeixinVerifySetting),
-		new(WeixinKeywordSetting)); err != nil {
+		new(WeixinKeywordSetting),
+		new(WeixinVerify),
+		new(WeixinKeyword)); err != nil {
 		holmes.Fatal("Fail to sync database: %v", err)
 	}
 }

@@ -13,14 +13,12 @@ type MsgInfo struct {
 }
 
 type VerifySetting struct {
-	Wechat         string    `json:"wechat"`
 	IfAutoVerified bool      `json:"ifAutoVerified"`
 	Reply          []MsgInfo `json:"reply"`
 	Interval       int64     `json:"interval"`
 }
 
 type KeywordSetting struct {
-	Wechat   string    `json:"wechat"`
 	ChatType string    `json:"chatType"`
 	MsgType  int64     `json:"msgType"`
 	Keyword  string    `json:"keyword"`
