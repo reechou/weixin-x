@@ -1,0 +1,5 @@
+2017/05/18 16:28:15  INFO [controller.(*Logic).Run](logic.go:49) server starting on[:6565]..
+2017/05/18 16:33:40  INFO [models.CreateWeixin](wx.go:33) create robot weixin[&{1  MQ2667588  1495096420 1495096420}] success.
+2017/05/18 16:38:19  INFO [models.CreateWeixinVerifySetting](wx_setting.go:34) create robot weixin verify setting[&{1 1 true [{"msyType":1,"content":"你好啊","msgSource":""},{"msyType":3,"content":"http://oe3slowqt.bkt.clouddn.com/FnfoWQpmr-sKGehze1aS0c1-9wWe","msgSource":""}] 3 1495096699 1495096699}] success.
+2017/05/18 16:41:17  INFO [models.CreateWeixinKeywordSetting](wx_setting.go:98) create robot weixin keyword setting[&{1 1 3  [{"msyType":1,"content":"你好啊","msgSource":""},{"msyType":42,"content":"gh_cb645007fc9e","msgSource":""}] 3 1495096877 1495096877}] success.
+2017/05/18 23:12:35  INFO [controller.(*Logic).Run](logic.go:49) server starting on[:6565]..
