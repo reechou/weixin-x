@@ -26,9 +26,9 @@ type WeixinVerify struct {
 }
 
 func CreateWeixinVerifySetting(info *WeixinVerifySetting) error {
-	if info.WeixinId == 0 {
-		return fmt.Errorf("wechat id cannot be nil.")
-	}
+	//if info.WeixinId == 0 {
+	//	return fmt.Errorf("wechat id cannot be nil.")
+	//}
 
 	now := time.Now().Unix()
 	info.CreatedAt = now
@@ -168,9 +168,9 @@ type WeixinKeyword struct {
 }
 
 func CreateWeixinKeywordSetting(info *WeixinKeywordSetting) error {
-	if info.WeixinId == 0 {
-		return fmt.Errorf("wechat id cannot be nil.")
-	}
+	//if info.WeixinId == 0 {
+	//	return fmt.Errorf("wechat id cannot be nil.")
+	//}
 
 	now := time.Now().Unix()
 	info.CreatedAt = now
