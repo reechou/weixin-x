@@ -96,6 +96,14 @@ func (self *Logic) transferTask(taskType int64, data string) interface{} {
 			return nil
 		}
 		return task
+	case proto.TASK_ID_MODIFY_USERINFO:
+		task := &proto.WxUserInfo{}
+		err := json.Unmarshal([]byte(data), task)
+		if err != nil {
+			holmes.Error("json unmarshal error: %v", err)
+			return nil
+		}
+		return task
 	}
 
 	return nil

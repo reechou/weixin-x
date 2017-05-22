@@ -65,3 +65,21 @@ type AttentionCard struct {
 	Cards    []string `json:"cards"`
 	Interval int64    `json:"interval"`
 }
+
+type HeadImg struct {
+	HeadUrl       string `json:"headUrl"`
+	BackgroundUrl string `json:"backgroundUrl"`
+}
+
+type BasicInfo struct {
+	Sex       int    `json:"sex"`
+	Province  string `json:"province"`
+	City      string `json:"city"`
+	Signature string `json:"signature"`
+	Nickname  string `json:"nickname"`
+}
+
+type WxUserInfo struct {
+	HI HeadImg   `json:"headImg"`
+	BI BasicInfo `json:"basicInfo"`
+}
