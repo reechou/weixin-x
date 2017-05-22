@@ -182,7 +182,6 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	var ids []int64
 	for _, v := range wxTask {
 		task := self.transferTask(v.TaskType, v.Data)
 		if task != nil {
@@ -192,10 +191,9 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 				Data:      task,
 			})
 		}
-		ids = append(ids, v.ID)
 	}
 
-	err = models.UpdateWeixinTaskList(ids)
+	err = models.UpdateWeixinTaskListFromWeixinId(weixin.ID)
 	if err != nil {
 		holmes.Error("update weixin if exec task error: %v", err)
 	}

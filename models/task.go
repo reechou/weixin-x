@@ -58,6 +58,14 @@ func GetWeixinTaskList(weixinId int64) ([]WeixinTask, error) {
 	return list, nil
 }
 
+func UpdateWeixinTaskListFromWeixinId(weixinId int64) error {
+	_, err := x.Where("weixin_id = ?", weixinId).And("if_exec = 0").Cols("if_exec").Update(&WeixinTaskList{IfExec: 1})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func UpdateWeixinTaskList(ids []int64) error {
 	_, err := x.In("id", ids).Cols("if_exec").Update(&WeixinTaskList{IfExec: 1})
 	if err != nil {
