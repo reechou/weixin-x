@@ -176,6 +176,11 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	
+	if wxTask == nil || len(wxTask) == 0 {
+		return 
+	}
+	
 	var ids []int64
 	for _, v := range wxTask {
 		task := self.transferTask(v.TaskType, v.Data)
