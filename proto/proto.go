@@ -1,9 +1,11 @@
 package proto
 
 type Weixin struct {
-	WxId     string `json:"wxId"`
-	Wechat   string `json:"wechat"`
-	NickName string `json:"nickName"`
+	WxId       string  `json:"wxId"`
+	Wechat     string  `json:"wechat"`
+	NickName   string  `json:"nickName"`
+	VerifyId   int64   `json:"verifyId"`
+	KeywordIds []int64 `json:"keywordIds"`
 }
 
 type MsgInfo struct {
@@ -29,4 +31,37 @@ type KeywordSetting struct {
 type WeixinSetting struct {
 	Verify  VerifySetting    `json:"verifySetting"`
 	Keyword []KeywordSetting `json:"keywordSetting"`
+}
+
+// task
+type Task struct {
+	TaskType  int64       `json:"taskId"`
+	IfDefault int64       `json:"IfDefault"`
+	Data      interface{} `json:"data"`
+}
+
+type LinkMsg struct {
+	Title      string `json:"title"`
+	Desc       string `json:"desc"`
+	LinkUrl    string `json:"linkUrl"`
+	ShowPicUrl string `json:"showPicUrl"`
+}
+
+type ContactsMass struct {
+	Interval int64     `json:"interval"`
+	TextMsgs []string  `json:"textMsgs"`
+	CardMsgs []string  `json:"cardMsgs"`
+	PicMsg   string    `json:"picMsg"`
+	LinkMsgs []LinkMsg `json:"linkMsgs"`
+}
+
+type FriendsCircle struct {
+	Text  string   `json:"text"`
+	Type  string   `json:"type"`
+	Media []string `json:"media"`
+}
+
+type AttentionCard struct {
+	Cards    []string `json:"cards"`
+	Interval int64    `json:"interval"`
 }

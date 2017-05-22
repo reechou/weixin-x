@@ -8,12 +8,13 @@ import (
 )
 
 type Weixin struct {
-	ID        int64  `xorm:"pk autoincr" json:"id"`
-	WxId      string `xorm:"not null default '' varchar(128) index" json:"wxId"`
-	Wechat    string `xorm:"not null default '' varchar(128) unique" json:"wechat"`
-	NickName  string `xorm:"not null default '' varchar(256)" json:"nickName"`
-	CreatedAt int64  `xorm:"not null default 0 int" json:"createAt"`
-	UpdatedAt int64  `xorm:"not null default 0 int" json:"-"`
+	ID                int64  `xorm:"pk autoincr" json:"id"`
+	WxId              string `xorm:"not null default '' varchar(128) index" json:"wxId"`
+	Wechat            string `xorm:"not null default '' varchar(128) unique" json:"wechat"`
+	NickName          string `xorm:"not null default '' varchar(256)" json:"nickName"`
+	IfExecDefaultTask int64  `xorm:"not null default 0 int" json:"ifExecDefaultTask"`
+	CreatedAt         int64  `xorm:"not null default 0 int" json:"createAt"`
+	UpdatedAt         int64  `xorm:"not null default 0 int" json:"-"`
 }
 
 func CreateWeixin(info *Weixin) error {
@@ -52,6 +53,15 @@ func UpdateWeixinWxid(info *Weixin) error {
 	affected, err := x.ID(info.ID).Cols("wx_id", "nick_name", "updated_at").Update(info)
 	if affected == 0 {
 		return fmt.Errorf("weixin update wxid nickname error")
+	}
+	return err
+}
+
+func UpdateWeixinIfExecDefaultTask(info *Weixin) error {
+	info.UpdatedAt = time.Now().Unix()
+	affected, err := x.ID(info.ID).Cols("if_exec_default_task", "updated_at").Update(info)
+	if affected == 0 {
+		return fmt.Errorf("weixin update if_exec_default_task error")
 	}
 	return err
 }

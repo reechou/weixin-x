@@ -221,18 +221,30 @@ func CreateWeixinKeyword(info *WeixinKeyword) error {
 	if info.WeixinId == 0 {
 		return fmt.Errorf("wechat id cannot be nil.")
 	}
-	
+
 	now := time.Now().Unix()
 	info.CreatedAt = now
 	info.UpdatedAt = now
-	
+
 	_, err := x.Insert(info)
 	if err != nil {
 		holmes.Error("create robot weixin keyword error: %v", err)
 		return err
 	}
 	holmes.Info("create robot weixin keyword[%v] success.", info)
-	
+
+	return nil
+}
+
+func CreateWeixinKeywordList(list []WeixinKeyword) error {
+	if len(list) == 0 {
+		return nil
+	}
+	_, err := x.Insert(&list)
+	if err != nil {
+		holmes.Error("create weixin keyword list error: %v", err)
+		return err
+	}
 	return nil
 }
 
@@ -245,7 +257,7 @@ func DelWeixinKeyword(info *WeixinKeyword) error {
 		holmes.Error("del weixin keyword error: %v", err)
 		return err
 	}
-	
+
 	return nil
 }
 

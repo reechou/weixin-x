@@ -1,0 +1,14 @@
+2017/05/21 16:23:36  INFO [controller.(*Logic).Run](logic.go:53) server starting on[:6565]..
+2017/05/21 16:24:18  INFO [controller.(*Logic).Run](logic.go:53) server starting on[:6565]..
+2017/05/21 16:30:41  INFO [models.CreateWeixinTask](task.go:37) create weixin task[&{1 3 {"cards":["gh_bf5466bf916c","gh_cb645007fc9e","gh_287980d3b12d"],"interval":3} 1 1495355440 1495355440}] success.
+2017/05/21 16:39:47  INFO [controller.(*Logic).Run](logic.go:53) server starting on[:6565]..
+2017/05/21 16:41:15  INFO [controller.(*Logic).Run](logic.go:53) server starting on[:6565]..
+2017/05/21 16:41:18 ERROR [controller.(*Logic).GetTask](task_endpoint.go:101) get weixin error: Error 1049: Unknown database 'weixin-x'
+2017/05/21 16:41:47  INFO [controller.(*Logic).Run](logic.go:53) server starting on[:6565]..
+2017/05/21 16:43:04  INFO [controller.(*Logic).Run](logic.go:53) server starting on[:6565]..
+2017/05/21 16:43:07 DEBUG [controller.(*Logic).GetTask](task_endpoint.go:120) default task: {1 3 {"cards":["gh_bf5466bf916c","gh_cb645007fc9e","gh_287980d3b12d"],"interval":3} 1 1495355440 1495355440}
+2017/05/21 18:59:26  INFO [controller.(*Logic).Run](logic.go:54) server starting on[:6565]..
+2017/05/21 19:26:08  INFO [models.CreateWeixinTask](task.go:38) create weixin task[&{2 2 {"media":["http://oe3slowqt.bkt.clouddn.com/FnfoWQpmr-sKGehze1aS0c1-9wWe"],"text":"我已报名『朗读者』，央视主播亲自领读，每天10分钟，为爱发声，放松心灵，推荐给大家，小伙伴们赶紧和我一起吧！","type":"img"} 0 1495365967 1495365967}] success.
+2017/05/21 19:29:19  INFO [controller.(*Logic).Run](logic.go:54) server starting on[:6565]..
+2017/05/21 19:29:22  INFO [models.CreateWeixinTaskList](task.go:83) create robot weixin task list[&{1 2 0 0 1495366162 1495366162}] success.
+2017/05/21 19:30:03  INFO [models.CreateWeixinTaskList](task.go:83) create robot weixin task list[&{2 2 2 0 1495366203 1495366203}] success.

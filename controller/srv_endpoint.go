@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/models"
@@ -19,17 +20,49 @@ func (self *Logic) CreateWeixin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req := &models.Weixin{}
+	req := &proto.Weixin{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("CreateWeixin json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
 
-	err := models.CreateWeixin(req)
+	weixin := &models.Weixin{
+		WxId:     req.WxId,
+		Wechat:   req.Wechat,
+		NickName: req.NickName,
+	}
+	err := models.CreateWeixin(weixin)
 	if err != nil {
 		holmes.Error("create weixin error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
+	}
+	rsp.Data = weixin.ID
+
+	if req.VerifyId != 0 {
+		wv := &models.WeixinVerify{
+			WeixinId:              weixin.ID,
+			WeixinVerifySettingId: req.VerifyId,
+		}
+		err = models.CreateWeixinVerify(wv)
+		if err != nil {
+			holmes.Error("create weixin verify error: %v", err)
+		}
+	}
+	if req.KeywordIds != nil {
+		var wks []models.WeixinKeyword
+		for _, v := range req.KeywordIds {
+			wks = append(wks, models.WeixinKeyword{
+				WeixinId:               weixin.ID,
+				WeixinKeywordSettingId: v,
+				CreatedAt:              time.Now().Unix(),
+				UpdatedAt:              time.Now().Unix(),
+			})
+		}
+		err = models.CreateWeixinKeywordList(wks)
+		if err != nil {
+			holmes.Error("create weixin keyword list error: %v", err)
+		}
 	}
 }
 
@@ -89,18 +122,18 @@ func (self *Logic) CreateWeixinVerify(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &models.WeixinVerify{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("CreateWeixinVerify json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.CreateWeixinVerify(req)
 	if err != nil {
 		holmes.Error("create weixin verify error: %v", err)
@@ -167,18 +200,18 @@ func (self *Logic) CreateWeixinKeyword(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &models.WeixinKeyword{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("CreateWeixinKeyword json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.CreateWeixinKeyword(req)
 	if err != nil {
 		holmes.Error("create weixin keyword error: %v", err)
@@ -204,6 +237,8 @@ func (self *Logic) GetWeixinSetting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	holmes.Debug("get weixin setting req: %v", req)
+
 	weixin := &models.Weixin{
 		Wechat: req.Wechat,
 	}
@@ -228,7 +263,7 @@ func (self *Logic) GetWeixinSetting(w http.ResponseWriter, r *http.Request) {
 	}
 
 	setting := &proto.WeixinSetting{}
-	
+
 	verifySetting, err := models.GetWeixinVerifySettingDetail(weixin.ID)
 	if err != nil {
 		holmes.Error("get weixin verify setting error: %v", err)
@@ -243,7 +278,7 @@ func (self *Logic) GetWeixinSetting(w http.ResponseWriter, r *http.Request) {
 			holmes.Error("json unmarshal verify setting reply error: %v", err)
 		}
 	}
-	
+
 	keywordSettingList, err := models.GetWeixinKeywordSettingList(weixin.ID)
 	if err != nil {
 		holmes.Error("get weixin keyword setting list error: %v", err)
@@ -264,44 +299,6 @@ func (self *Logic) GetWeixinSetting(w http.ResponseWriter, r *http.Request) {
 			setting.Keyword = append(setting.Keyword, kSetting)
 		}
 	}
-
-	//verifySetting := &models.WeixinVerifySetting{
-	//	WeixinId: weixin.ID,
-	//}
-	//has, err = models.GetWeixinVerifySetting(verifySetting)
-	//if err != nil {
-	//	holmes.Error("get weixin verify setting error: %v", err)
-	//	rsp.Code = proto.RESPONSE_ERR
-	//	return
-	//}
-	//if has {
-	//	setting.Verify.IfAutoVerified = verifySetting.IfAutoVerified
-	//	setting.Verify.Interval = verifySetting.Interval
-	//	err = json.Unmarshal([]byte(verifySetting.Reply), &setting.Verify.Reply)
-	//	if err != nil {
-	//		holmes.Error("json unmarshal verify setting reply error: %v", err)
-	//	}
-	//}
-	//keywordSettingList, err := models.GetWeixinKeywordSetting(weixin.ID)
-	//if err != nil {
-	//	holmes.Error("get weixin keyword setting list error: %v", err)
-	//	rsp.Code = proto.RESPONSE_ERR
-	//	return
-	//}
-	//for _, v := range keywordSettingList {
-	//	kSetting := proto.KeywordSetting{
-	//		ChatType: v.ChatType,
-	//		MsgType:  v.MsgType,
-	//		Keyword:  v.Keyword,
-	//		Interval: v.Interval,
-	//	}
-	//	err = json.Unmarshal([]byte(v.Reply), &kSetting.Reply)
-	//	if err != nil {
-	//		holmes.Error("json unmarshal keyword setting reply error: %v", err)
-	//	} else {
-	//		setting.Keyword = append(setting.Keyword, kSetting)
-	//	}
-	//}
 
 	rsp.Data = setting
 }
