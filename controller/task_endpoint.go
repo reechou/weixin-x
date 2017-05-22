@@ -178,7 +178,8 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	if wxTask == nil || len(wxTask) == 0 {
-		return 
+		rsp.Data = taskList
+		return
 	}
 	
 	var ids []int64
