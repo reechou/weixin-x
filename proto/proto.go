@@ -29,8 +29,9 @@ type KeywordSetting struct {
 }
 
 type WeixinSetting struct {
-	Verify  VerifySetting    `json:"verifySetting"`
-	Keyword []KeywordSetting `json:"keywordSetting"`
+	WeixinId int64            `json:"weixinId"`
+	Verify   VerifySetting    `json:"verifySetting"`
+	Keyword  []KeywordSetting `json:"keywordSetting"`
 }
 
 // task
@@ -48,11 +49,12 @@ type LinkMsg struct {
 }
 
 type ContactsMass struct {
-	Interval int64     `json:"interval"`
-	TextMsgs []string  `json:"textMsgs"`
-	CardMsgs []string  `json:"cardMsgs"`
-	PicMsg   string    `json:"picMsg"`
-	LinkMsgs []LinkMsg `json:"linkMsgs"`
+	Interval     int64     `json:"interval"`
+	ControlLimit int64     `json:"controlLimit"`
+	TextMsgs     []string  `json:"textMsgs"`
+	CardMsgs     []string  `json:"cardMsgs"`
+	PicMsg       string    `json:"picMsg"`
+	LinkMsgs     []LinkMsg `json:"linkMsgs"`
 }
 
 type FriendsCircle struct {

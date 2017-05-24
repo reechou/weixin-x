@@ -65,3 +65,22 @@ func UpdateWeixinIfExecDefaultTask(info *Weixin) error {
 	}
 	return err
 }
+
+func GetWeixinCount() (int64, error) {
+	count, err := x.Count(&Weixin{})
+	if err != nil {
+		holmes.Error("get weixin list count error: %v", err)
+		return 0, err
+	}
+	return count, nil
+}
+
+func GetWeixinList(offset, num int64) ([]Weixin, error) {
+	var list []Weixin
+	err := x.Desc("created_at").Limit(int(num), int(offset)).Find(&list)
+	if err != nil {
+		holmes.Error("get weixin list error: %v", err)
+		return nil, err
+	}
+	return list, nil
+}

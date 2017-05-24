@@ -262,7 +262,9 @@ func (self *Logic) GetWeixinSetting(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	setting := &proto.WeixinSetting{}
+	setting := &proto.WeixinSetting{
+		WeixinId: weixin.ID,
+	}
 
 	verifySetting, err := models.GetWeixinVerifySettingDetail(weixin.ID)
 	if err != nil {
