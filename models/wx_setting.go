@@ -147,11 +147,11 @@ func GetWeixinVerify(info *WeixinVerify) (bool, error) {
 	return true, nil
 }
 
-func GetAllVerifyList() ([]WeixinVerify, error) {
-	var list []WeixinVerify
+func GetAllVerifyList() ([]WeixinVerifySetting, error) {
+	var list []WeixinVerifySetting
 	err := x.Find(&list)
 	if err != nil {
-		holmes.Error("get all weixin verify list error: %v", err)
+		holmes.Error("get all weixin verify setting list error: %v", err)
 		return nil, err
 	}
 	return list, nil
@@ -283,11 +283,11 @@ func GetWeixinKeyword(info *WeixinKeyword) (bool, error) {
 	return true, nil
 }
 
-func GetAllKeywordList() ([]WeixinKeyword, error) {
-	var list []WeixinKeyword
+func GetAllKeywordList() ([]WeixinKeywordSetting, error) {
+	var list []WeixinKeywordSetting
 	err := x.Find(&list)
 	if err != nil {
-		holmes.Error("get all weixin keyword list error: %v", err)
+		holmes.Error("get all weixin keyword setting list error: %v", err)
 		return nil, err
 	}
 	return list, nil
