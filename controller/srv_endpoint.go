@@ -253,7 +253,7 @@ func (self *Logic) GetWeixinSettingFromId(w http.ResponseWriter, r *http.Request
 		return
 	}
 	
-	holmes.Debug("get weixin setting req: %v", req)
+	//holmes.Debug("get weixin setting req: %v", req)
 	
 	setting := &proto.WeixinSetting{
 		WeixinId: req.Id,
