@@ -327,10 +327,6 @@ func (self *Logic) GetAllWeixin(w http.ResponseWriter, r *http.Request) {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
 	
-	if r.Method != "POST" {
-		return
-	}
-	
 	list, err := models.GetAllWeixinList()
 	if err != nil {
 		holmes.Error("get all weixin error: %v", err)
@@ -346,10 +342,6 @@ func (self *Logic) GetAllVerifySetting(w http.ResponseWriter, r *http.Request) {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
 	
-	if r.Method != "POST" {
-		return
-	}
-	
 	list, err := models.GetAllVerifyList()
 	if err != nil {
 		holmes.Error("get all weixin verify list error: %v", err)
@@ -364,10 +356,6 @@ func (self *Logic) GetAllKeywordSetting(w http.ResponseWriter, r *http.Request) 
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
-	if r.Method != "POST" {
-		return
-	}
 	
 	list, err := models.GetAllKeywordList()
 	if err != nil {
