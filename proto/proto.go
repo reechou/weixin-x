@@ -1,5 +1,9 @@
 package proto
 
+type WeixinID struct {
+	Id int64 `json:"id"`
+}
+
 type Weixin struct {
 	WxId       string  `json:"wxId"`
 	Wechat     string  `json:"wechat"`
