@@ -43,7 +43,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/get_all_weixin", self.GetAllWeixin)
 	http.HandleFunc("/weixin/get_all_verify", self.GetAllVerifySetting)
 	http.HandleFunc("/weixin/get_all_keyword", self.GetAllKeywordSetting)
-	http.HandleFunc("/weixin/get_all_keyword", self.GetAllTask)
+	http.HandleFunc("/weixin/get_all_task", self.GetAllTask)
 }
 
 func (self *Logic) Run() {
