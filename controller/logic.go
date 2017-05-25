@@ -39,6 +39,11 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/create_task", self.CreateTask)
 	http.HandleFunc("/weixin/create_weixin_task", self.CreateWeixinTask)
 	http.HandleFunc("/weixin/get_task", self.GetTask)
+	
+	http.HandleFunc("/weixin/get_all_weixin", self.GetAllWeixin)
+	http.HandleFunc("/weixin/get_all_verify", self.GetAllVerifySetting)
+	http.HandleFunc("/weixin/get_all_keyword", self.GetAllKeywordSetting)
+	http.HandleFunc("/weixin/get_all_keyword", self.GetAllTask)
 }
 
 func (self *Logic) Run() {

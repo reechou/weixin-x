@@ -77,9 +77,19 @@ func GetWeixinCount() (int64, error) {
 
 func GetWeixinList(offset, num int64) ([]Weixin, error) {
 	var list []Weixin
-	err := x.Desc("created_at").Limit(int(num), int(offset)).Find(&list)
+	err := x.Limit(int(num), int(offset)).Find(&list)
 	if err != nil {
 		holmes.Error("get weixin list error: %v", err)
+		return nil, err
+	}
+	return list, nil
+}
+
+func GetAllWeixinList() ([]Weixin, error) {
+	var list []Weixin
+	err := x.Find(&list)
+	if err != nil {
+		holmes.Error("get all weixin list error: %v", err)
 		return nil, err
 	}
 	return list, nil

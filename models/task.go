@@ -40,6 +40,16 @@ func CreateWeixinTask(info *WeixinTask) error {
 	return nil
 }
 
+func GetAllTaskList() ([]WeixinTask, error) {
+	var list []WeixinTask
+	err := x.Find(&list)
+	if err != nil {
+		holmes.Error("get all weixin task list error: %v", err)
+		return nil, err
+	}
+	return list, nil
+}
+
 func GetWeixinDefaultTaskList() ([]WeixinTask, error) {
 	var list []WeixinTask
 	err := x.Where("if_default = 1").Find(&list)
@@ -90,5 +100,17 @@ func CreateWeixinTaskList(info *WeixinTaskList) error {
 	}
 	holmes.Info("create robot weixin task list[%v] success.", info)
 
+	return nil
+}
+
+func CreateWeixinTaskInfoList(list []WeixinTaskList) error {
+	if len(list) == 0 {
+		return nil
+	}
+	_, err := x.Insert(&list)
+	if err != nil {
+		holmes.Error("create weixin task list error: %v", err)
+		return err
+	}
 	return nil
 }

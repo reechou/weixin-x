@@ -36,6 +36,7 @@ func (self *Logic) CreateWeixin(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		holmes.Error("create weixin error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
+		return
 	}
 	rsp.Data = weixin.ID
 
@@ -62,6 +63,21 @@ func (self *Logic) CreateWeixin(w http.ResponseWriter, r *http.Request) {
 		err = models.CreateWeixinKeywordList(wks)
 		if err != nil {
 			holmes.Error("create weixin keyword list error: %v", err)
+		}
+	}
+	if req.TaskIds != nil {
+		var wts []models.WeixinTaskList
+		for _, v := range req.TaskIds {
+			wts = append(wts, models.WeixinTaskList{
+				WeixinId:     weixin.ID,
+				WeixinTaskId: v,
+				CreatedAt:    time.Now().Unix(),
+				UpdatedAt:    time.Now().Unix(),
+			})
+		}
+		err = models.CreateWeixinTaskInfoList(wts)
+		if err != nil {
+			holmes.Error("create weixin task list error: %v", err)
 		}
 	}
 }
@@ -303,4 +319,61 @@ func (self *Logic) GetWeixinSetting(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rsp.Data = setting
+}
+
+func (self *Logic) GetAllWeixin(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	list, err := models.GetAllWeixinList()
+	if err != nil {
+		holmes.Error("get all weixin error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
+}
+
+func (self *Logic) GetAllVerifySetting(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	list, err := models.GetAllVerifyList()
+	if err != nil {
+		holmes.Error("get all weixin verify list error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
+}
+
+func (self *Logic) GetAllKeywordSetting(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	list, err := models.GetAllKeywordList()
+	if err != nil {
+		holmes.Error("get all weixin keyword list error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
 }

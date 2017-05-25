@@ -4,8 +4,10 @@ type Weixin struct {
 	WxId       string  `json:"wxId"`
 	Wechat     string  `json:"wechat"`
 	NickName   string  `json:"nickName"`
+	WeixinId   int64   `json:"weixinId"`
 	VerifyId   int64   `json:"verifyId"`
 	KeywordIds []int64 `json:"keywordIds"`
+	TaskIds    []int64 `json:"taskIds"`
 }
 
 type MsgInfo struct {

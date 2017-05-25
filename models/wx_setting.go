@@ -147,6 +147,16 @@ func GetWeixinVerify(info *WeixinVerify) (bool, error) {
 	return true, nil
 }
 
+func GetAllVerifyList() ([]WeixinVerify, error) {
+	var list []WeixinVerify
+	err := x.Find(&list)
+	if err != nil {
+		holmes.Error("get all weixin verify list error: %v", err)
+		return nil, err
+	}
+	return list, nil
+}
+
 type WeixinKeywordSetting struct {
 	ID        int64  `xorm:"pk autoincr" json:"id"`
 	WeixinId  int64  `xorm:"not null default 0 int index" json:"weixinId"`
@@ -271,4 +281,14 @@ func GetWeixinKeyword(info *WeixinKeyword) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+func GetAllKeywordList() ([]WeixinKeyword, error) {
+	var list []WeixinKeyword
+	err := x.Find(&list)
+	if err != nil {
+		holmes.Error("get all weixin keyword list error: %v", err)
+		return nil, err
+	}
+	return list, nil
 }

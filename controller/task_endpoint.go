@@ -199,3 +199,22 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 	}
 	rsp.Data = taskList
 }
+
+func (self *Logic) GetAllTask(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	list, err := models.GetAllTaskList()
+	if err != nil {
+		holmes.Error("get all weixin task list error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
+}
