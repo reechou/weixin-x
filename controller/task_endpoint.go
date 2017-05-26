@@ -151,7 +151,7 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	holmes.Debug("get task req: %v", req)
+	//holmes.Debug("get task req: %v", req)
 
 	weixin := &models.Weixin{
 		Wechat: req.Wechat,
