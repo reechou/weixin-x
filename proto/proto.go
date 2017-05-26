@@ -1,6 +1,6 @@
 package proto
 
-type WeixinID struct {
+type ReqID struct {
 	Id int64 `json:"id"`
 }
 

@@ -36,6 +36,19 @@ func CreateWeixin(info *Weixin) error {
 	return nil
 }
 
+func DelWeixin(info *Weixin) error {
+	if info.ID == 0 {
+		return fmt.Errorf("del id cannot be nil.")
+	}
+	_, err := x.ID(info.ID).Delete(info)
+	if err != nil {
+		holmes.Error("del weixin error: %v", err)
+		return err
+	}
+	
+	return nil
+}
+
 func GetWeixin(info *Weixin) (bool, error) {
 	has, err := x.Where("wechat = ?", info.Wechat).Get(info)
 	if err != nil {

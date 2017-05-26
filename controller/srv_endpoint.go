@@ -82,6 +82,31 @@ func (self *Logic) CreateWeixin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (self *Logic) DeleteWeixin(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.ReqID{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("DeleteWeixin json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.DelWeixin(&models.Weixin{ID: req.Id})
+	if err != nil {
+		holmes.Error("delete weixin error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
 func (self *Logic) CreateWeixinVerifySetting(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
 	defer func() {
@@ -99,21 +124,6 @@ func (self *Logic) CreateWeixinVerifySetting(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	//weixin := &models.Weixin{
-	//	Wechat: req.Wechat,
-	//}
-	//has, err := models.GetWeixin(weixin)
-	//if err != nil {
-	//	holmes.Error("get weixin error: %v", err)
-	//	rsp.Code = proto.RESPONSE_ERR
-	//	return
-	//}
-	//if !has {
-	//	holmes.Error("Has no this weixin[%s]", req.Wechat)
-	//	rsp.Code = proto.RESPONSE_ERR
-	//	return
-	//}
-
 	reply, err := json.Marshal(req.Reply)
 	if err != nil {
 		holmes.Error("json marshal reply error: %v", err)
@@ -128,6 +138,31 @@ func (self *Logic) CreateWeixinVerifySetting(w http.ResponseWriter, r *http.Requ
 	err = models.CreateWeixinVerifySetting(setting)
 	if err != nil {
 		holmes.Error("create weixin verify setting error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
+func (self *Logic) DeleteWeixinVerifySetting(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.ReqID{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("DeleteWeixinVerifySetting json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.DelWeixinVerifySetting(&models.WeixinVerifySetting{ID: req.Id})
+	if err != nil {
+		holmes.Error("delete weixin verify setting error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
@@ -158,6 +193,31 @@ func (self *Logic) CreateWeixinVerify(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (self *Logic) DeleteWeixinVerify(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.ReqID{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("DeleteWeixinVerify json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.DelWeixinVerify(&models.WeixinVerify{ID: req.Id})
+	if err != nil {
+		holmes.Error("delete weixin verify error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
 func (self *Logic) CreateWeixinKeywordSetting(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
 	defer func() {
@@ -175,21 +235,6 @@ func (self *Logic) CreateWeixinKeywordSetting(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	//weixin := &models.Weixin{
-	//	Wechat: req.Wechat,
-	//}
-	//has, err := models.GetWeixin(weixin)
-	//if err != nil {
-	//	holmes.Error("get weixin error: %v", err)
-	//	rsp.Code = proto.RESPONSE_ERR
-	//	return
-	//}
-	//if !has {
-	//	holmes.Error("Has no this weixin[%s]", req.Wechat)
-	//	rsp.Code = proto.RESPONSE_ERR
-	//	return
-	//}
-
 	reply, err := json.Marshal(req.Reply)
 	if err != nil {
 		holmes.Error("json marshal reply error: %v", err)
@@ -206,6 +251,31 @@ func (self *Logic) CreateWeixinKeywordSetting(w http.ResponseWriter, r *http.Req
 	err = models.CreateWeixinKeywordSetting(setting)
 	if err != nil {
 		holmes.Error("create weixin keyword setting error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
+func (self *Logic) DeleteWeixinKeywordSetting(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.ReqID{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("DeleteWeixinKeywordSetting json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.DelWeixinKeywordSetting(&models.WeixinKeywordSetting{ID: req.Id})
+	if err != nil {
+		holmes.Error("delete weixin keyword setting error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
@@ -236,6 +306,31 @@ func (self *Logic) CreateWeixinKeyword(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (self *Logic) DeleteWeixinKeyword(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.ReqID{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("DeleteWeixinKeyword json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.DelWeixinKeyword(&models.WeixinKeyword{ID: req.Id})
+	if err != nil {
+		holmes.Error("delete weixin keyword error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
 func (self *Logic) GetWeixinSettingFromId(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
 	defer func() {
@@ -246,7 +341,7 @@ func (self *Logic) GetWeixinSettingFromId(w http.ResponseWriter, r *http.Request
 		return
 	}
 	
-	req := &proto.WeixinID{}
+	req := &proto.ReqID{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("GetWeixinSettingFromId json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR

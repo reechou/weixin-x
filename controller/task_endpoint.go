@@ -45,6 +45,31 @@ func (self *Logic) CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (self *Logic) DeleteTask(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.ReqID{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("DeleteWeixinTask json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.DelWeixinTask(&models.WeixinTask{ID: req.Id})
+	if err != nil {
+		holmes.Error("delete weixin task error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
 func (self *Logic) CreateWeixinTask(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
 	defer func() {

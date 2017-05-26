@@ -40,6 +40,19 @@ func CreateWeixinTask(info *WeixinTask) error {
 	return nil
 }
 
+func DelWeixinTask(info *WeixinTask) error {
+	if info.ID == 0 {
+		return fmt.Errorf("del id cannot be nil.")
+	}
+	_, err := x.ID(info.ID).Delete(info)
+	if err != nil {
+		holmes.Error("del weixin task error: %v", err)
+		return err
+	}
+	
+	return nil
+}
+
 func GetAllTaskList() ([]WeixinTask, error) {
 	var list []WeixinTask
 	err := x.Find(&list)
