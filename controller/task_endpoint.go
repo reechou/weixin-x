@@ -45,7 +45,68 @@ func (self *Logic) CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (self *Logic) BatchCreateTaskList(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+
+	if r.Method != "POST" {
+		return
+	}
+
+	req := &proto.BatchTaskList{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("BatchCreateTaskList json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+
+	var list []models.WeixinTaskList
+	for _, v := range req.TaskIds {
+		for _, v2 := range req.Weixins {
+			list = append(list, models.WeixinTaskList{
+				WeixinId:     v2,
+				WeixinTaskId: v,
+			})
+		}
+	}
+	if list != nil || len(list) != 0 {
+		err := models.CreateWeixinTaskInfoList(list)
+		if err != nil {
+			holmes.Error("create weixin task error: %v", err)
+			rsp.Code = proto.RESPONSE_ERR
+			return
+		}
+	}
+}
+
 func (self *Logic) DeleteTask(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+
+	if r.Method != "POST" {
+		return
+	}
+
+	req := &proto.ReqID{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("DeleteWeixinTask json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+
+	err := models.DelWeixinTask(&models.WeixinTask{ID: req.Id})
+	if err != nil {
+		holmes.Error("delete weixin task error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
+func (self *Logic) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
@@ -55,16 +116,16 @@ func (self *Logic) DeleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	req := &proto.ReqID{}
+	req := &models.WeixinTask{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-		holmes.Error("DeleteWeixinTask json decode error: %v", err)
+		holmes.Error("UpdateTask json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
 	
-	err := models.DelWeixinTask(&models.WeixinTask{ID: req.Id})
+	err := models.UpdateWeixinTask(req)
 	if err != nil {
-		holmes.Error("delete weixin task error: %v", err)
+		holmes.Error("update weixin task error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
@@ -201,12 +262,12 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	if wxTask == nil || len(wxTask) == 0 {
 		rsp.Data = taskList
 		return
 	}
-	
+
 	for _, v := range wxTask {
 		task := self.transferTask(v.TaskType, v.Data)
 		if task != nil {
@@ -230,11 +291,11 @@ func (self *Logic) GetAllTask(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	list, err := models.GetAllTaskList()
 	if err != nil {
 		holmes.Error("get all weixin task list error: %v", err)

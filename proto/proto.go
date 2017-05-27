@@ -41,6 +41,11 @@ type WeixinSetting struct {
 }
 
 // task
+type BatchTaskList struct {
+	TaskIds []int64 `json:"taskIds"`
+	Weixins []int64 `json:"weixins"`
+}
+
 type Task struct {
 	TaskType  int64       `json:"taskId"`
 	IfDefault int64       `json:"IfDefault"`

@@ -57,6 +57,13 @@ func DelWeixinVerifySetting(info *WeixinVerifySetting) error {
 	return nil
 }
 
+func UpdateWeixinVerifySetting(info *WeixinVerifySetting) error {
+	now := time.Now().Unix()
+	info.UpdatedAt = now
+	_, err := x.Id(info.ID).Cols("if_auto_verified", "reply", "interval").Update(info)
+	return err
+}
+
 func GetWeixinVerifySetting(info *WeixinVerifySetting) (bool, error) {
 	has, err := x.Where("weixin_id = ?", info.WeixinId).Get(info)
 	if err != nil {
@@ -209,6 +216,13 @@ func DelWeixinKeywordSetting(info *WeixinKeywordSetting) error {
 	return nil
 }
 
+func UpdateWeixinKeywordSetting(info *WeixinKeywordSetting) error {
+	now := time.Now().Unix()
+	info.UpdatedAt = now
+	_, err := x.Id(info.ID).Cols("chat_type", "msg_type", "keyword", "reply", "interval").Update(info)
+	return err
+}
+
 func GetWeixinKeywordSettingList(weixinId int64) ([]WeixinKeywordSetting, error) {
 	var list []WeixinKeywordSetting
 	err := x.Sql("select * from weixin_keyword_setting where id in (select weixin_keyword_setting_id from weixin_keyword where weixin_id = ?)", weixinId).Find(&list)
@@ -287,8 +301,20 @@ func GetAllKeywordList() ([]WeixinKeywordSetting, error) {
 	var list []WeixinKeywordSetting
 	err := x.Find(&list)
 	if err != nil {
-		holmes.Error("get all weixin keyword setting list error: %v", err)
+		holmes.Error("get all weixin keyword list error: %v", err)
 		return nil, err
 	}
 	return list, nil
+}
+
+func GetWeixinKeywordSettingFromId(info *WeixinKeywordSetting) (bool, error) {
+	has, err := x.Id(info.ID).Get(info)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		holmes.Debug("cannot find weixin keyword setting from id[%d]", info.ID)
+		return false, nil
+	}
+	return true, nil
 }

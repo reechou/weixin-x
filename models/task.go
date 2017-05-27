@@ -53,6 +53,13 @@ func DelWeixinTask(info *WeixinTask) error {
 	return nil
 }
 
+func UpdateWeixinTask(info *WeixinTask) error {
+	now := time.Now().Unix()
+	info.UpdatedAt = now
+	_, err := x.Id(info.ID).Cols("task_type", "data", "if_default").Update(info)
+	return err
+}
+
 func GetAllTaskList() ([]WeixinTask, error) {
 	var list []WeixinTask
 	err := x.Find(&list)
