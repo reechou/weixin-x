@@ -45,7 +45,7 @@ func DelWeixin(info *Weixin) error {
 		holmes.Error("del weixin error: %v", err)
 		return err
 	}
-	
+
 	return nil
 }
 

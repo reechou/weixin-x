@@ -49,7 +49,7 @@ func DelWeixinTask(info *WeixinTask) error {
 		holmes.Error("del weixin task error: %v", err)
 		return err
 	}
-	
+
 	return nil
 }
 

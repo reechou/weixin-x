@@ -53,7 +53,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/create_weixin_task", self.CreateWeixinTask)
 	http.HandleFunc("/weixin/batch_create_weixin_task", self.BatchCreateTaskList)
 	http.HandleFunc("/weixin/get_task", self.GetTask)
-	
+
 	http.HandleFunc("/weixin/get_all_weixin", self.GetAllWeixin)
 	http.HandleFunc("/weixin/get_all_verify", self.GetAllVerifySetting)
 	http.HandleFunc("/weixin/get_all_keyword", self.GetAllKeywordSetting)

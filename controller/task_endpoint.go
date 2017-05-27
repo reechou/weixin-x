@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/models"
@@ -68,6 +69,8 @@ func (self *Logic) BatchCreateTaskList(w http.ResponseWriter, r *http.Request) {
 			list = append(list, models.WeixinTaskList{
 				WeixinId:     v2,
 				WeixinTaskId: v,
+				CreatedAt:    time.Now().Unix(),
+				UpdatedAt:    time.Now().Unix(),
 			})
 		}
 	}
@@ -111,18 +114,18 @@ func (self *Logic) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &models.WeixinTask{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("UpdateTask json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.UpdateWeixinTask(req)
 	if err != nil {
 		holmes.Error("update weixin task error: %v", err)
@@ -136,18 +139,18 @@ func (self *Logic) GetTaskFromId(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &proto.ReqID{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("GetTaskFromId json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	task := &models.WeixinTask{
 		ID: req.Id,
 	}
