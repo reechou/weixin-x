@@ -60,6 +60,18 @@ func UpdateWeixinTask(info *WeixinTask) error {
 	return err
 }
 
+func GetWeixinTaskFromId(info *WeixinTask) (bool, error) {
+	has, err := x.Id(info.ID).Get(info)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		holmes.Debug("cannot find weixin task from id[%d]", info.ID)
+		return false, nil
+	}
+	return true, nil
+}
+
 func GetAllTaskList() ([]WeixinTask, error) {
 	var list []WeixinTask
 	err := x.Find(&list)

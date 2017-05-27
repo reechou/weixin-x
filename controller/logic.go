@@ -49,6 +49,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/create_task", self.CreateTask)
 	http.HandleFunc("/weixin/delete_task", self.DeleteTask)
 	http.HandleFunc("/weixin/update_task", self.UpdateTask)
+	http.HandleFunc("/weixin/get_task_from_id", self.GetTaskFromId)
 	http.HandleFunc("/weixin/create_weixin_task", self.CreateWeixinTask)
 	http.HandleFunc("/weixin/batch_create_weixin_task", self.BatchCreateTaskList)
 	http.HandleFunc("/weixin/get_task", self.GetTask)

@@ -131,6 +131,40 @@ func (self *Logic) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (self *Logic) GetTaskFromId(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.ReqID{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetTaskFromId json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	task := &models.WeixinTask{
+		ID: req.Id,
+	}
+	has, err := models.GetWeixinTaskFromId(task)
+	if err != nil {
+		holmes.Error("get weixin task error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	if !has {
+		rsp.Code = proto.RESPONSE_ERR
+		rsp.Msg = "can not found"
+		return
+	}
+	rsp.Data = task
+}
+
 func (self *Logic) CreateWeixinTask(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
 	defer func() {
