@@ -37,7 +37,8 @@ func InitDB(cfg *config.Config) {
 		new(WeixinVerify),
 		new(WeixinKeyword),
 		new(WeixinTask),
-		new(WeixinTaskList)); err != nil {
+		new(WeixinTaskList),
+		new(WeixinContact)); err != nil {
 		holmes.Fatal("Fail to sync database: %v", err)
 	}
 }

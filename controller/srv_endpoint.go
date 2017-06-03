@@ -82,6 +82,31 @@ func (self *Logic) CreateWeixin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (self *Logic) UpdateWeixinDesc(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &models.Weixin{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("UpdateWeixinDesc json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.UpdateWeixinDesc(req)
+	if err != nil {
+		holmes.Error("update weixin desc error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
 func (self *Logic) DeleteWeixin(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
 	defer func() {
@@ -466,8 +491,6 @@ func (self *Logic) GetWeixinSettingFromId(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	//holmes.Debug("get weixin setting req: %v", req)
-
 	setting := &proto.WeixinSetting{
 		WeixinId: req.Id,
 	}
@@ -607,6 +630,14 @@ func (self *Logic) GetAllWeixin(w http.ResponseWriter, r *http.Request) {
 		holmes.Error("get all weixin error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
+	}
+	now := time.Now().Unix()
+	todayZero := now - (now % 86400) - 28800
+	for i := 0; i < len(list); i++ {
+		addContactZero := list[i].LastAddContactTime - (list[i].LastAddContactTime % 86400) - 28800
+		if addContactZero < todayZero {
+			list[i].TodayAddContactNum = 0
+		}
 	}
 	rsp.Data = list
 }

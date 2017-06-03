@@ -96,3 +96,26 @@ type WxUserInfo struct {
 	HI HeadImg   `json:"headImg"`
 	BI BasicInfo `json:"basicInfo"`
 }
+
+// contact
+type Contact struct {
+	UserName    string `json:"userName"`
+	AliasName   string `json:"aliasName"`
+	NickName    string `json:"nickName"`
+	PhoneNumber string `json:"phoneNumber"`
+	Country     string `json:"country"`
+	Province    string `json:"province"`
+	City        string `json:"city"`
+	Sex         int64  `json:"sex"`
+	Remark      string `json:"remark"`
+}
+
+type SyncContacts struct {
+	Myself      string    `json:"myself"`
+	ContactData []Contact `json:"contactData"`
+}
+
+type AddContact struct {
+	Myself      string  `json:"myself"`
+	ContactData Contact `json:"contactData"`
+}

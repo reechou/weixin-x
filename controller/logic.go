@@ -12,6 +12,8 @@ import (
 
 type Logic struct {
 	sync.Mutex
+	
+	cw *ContactWorker
 
 	cfg *config.Config
 }
@@ -20,6 +22,7 @@ func NewLogic(cfg *config.Config) *Logic {
 	l := &Logic{
 		cfg: cfg,
 	}
+	l.cw = NewContactWorker()
 	l.init()
 
 	models.InitDB(cfg)
@@ -31,6 +34,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/robot/receive_msg", self.RobotReceiveMsg)
 
 	http.HandleFunc("/weixin/create_weixin", self.CreateWeixin)
+	http.HandleFunc("/weixin/update_weixin_desc", self.UpdateWeixinDesc)
 	http.HandleFunc("/weixin/delete_weixin", self.DeleteWeixin)
 	http.HandleFunc("/weixin/create_verify_setting", self.CreateWeixinVerifySetting)
 	http.HandleFunc("/weixin/get_verify_setting", self.GetWeixinVerifySetting)
@@ -53,6 +57,8 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/create_weixin_task", self.CreateWeixinTask)
 	http.HandleFunc("/weixin/batch_create_weixin_task", self.BatchCreateTaskList)
 	http.HandleFunc("/weixin/get_task", self.GetTask)
+	http.HandleFunc("/weixin/sync_contacts", self.SyncContacts)
+	http.HandleFunc("/weixin/add_contact", self.AddContact)
 
 	http.HandleFunc("/weixin/get_all_weixin", self.GetAllWeixin)
 	http.HandleFunc("/weixin/get_all_verify", self.GetAllVerifySetting)
