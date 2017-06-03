@@ -119,10 +119,10 @@ func UpdateWeixinIfExecDefaultTask(info *Weixin) error {
 
 func UpdateWeixinLastHeartbeat(info *Weixin) error {
 	info.UpdatedAt = time.Now().Unix()
-	affected, err := x.ID(info.ID).Cols("last_heartbeat", "updated_at").Update(info)
-	if affected == 0 {
-		return fmt.Errorf("weixin update last_heartbeat error")
-	}
+	_, err := x.ID(info.ID).Cols("last_heartbeat", "updated_at").Update(info)
+	//if affected == 0 {
+	//	return fmt.Errorf("weixin update last_heartbeat error")
+	//}
 	return err
 }
 
