@@ -335,7 +335,7 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 	weixin.LastHeartbeat = now
 	err = models.UpdateWeixinLastHeartbeat(weixin)
 	if err != nil {
-		holmes.Error("update weixin last heatbeat error: %v", err)
+		holmes.Error("update weixin last heatbeat error: %v weixin: %v", err, weixin)
 	}
 	
 	rsp.Data = taskList
