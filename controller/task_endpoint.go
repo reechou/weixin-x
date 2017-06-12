@@ -8,6 +8,7 @@ import (
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/models"
 	"github.com/reechou/weixin-x/proto"
+	"github.com/jinzhu/now"
 )
 
 func (self *Logic) CreateTask(w http.ResponseWriter, r *http.Request) {
@@ -416,6 +417,10 @@ func (self *Logic) AddContact(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	defer func() {
+		beginOfDay := now.BeginningOfDay().Unix()
+		if weixin.LastAddContactTime < beginOfDay {
+			weixin.TodayAddContactNum = 0
+		}
 		weixin.TodayAddContactNum = weixin.TodayAddContactNum+1
 		err = models.UpdateWeixinAddContact(weixin)
 		if err != nil {
