@@ -671,3 +671,54 @@ func (self *Logic) GetAllKeywordSetting(w http.ResponseWriter, r *http.Request) 
 	}
 	rsp.Data = list
 }
+
+func (self *Logic) GetWeixinContactBind(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	req := &proto.WeixinContactBindReq{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetWeixinContactBindCard json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	bindCard := &models.WeixinContactBindCard{
+		WxId: req.WxId,
+	}
+	has, err := models.GetWeixinContactBindCard(bindCard)
+	if err != nil {
+		holmes.Error("get bind card error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	bindData := proto.WeixinContactBindRsp{}
+	if has {
+		if bindCard.CardGid != "" {
+			bindData.BindCard = bindCard
+			rsp.Data = bindData
+			return
+		}
+		bindCard.CardGid = req.CardId
+		err = models.UpdateWeixinContactBindCard(bindCard)
+		if err != nil {
+			holmes.Error("update bind card error: %v", err)
+			rsp.Code = proto.RESPONSE_ERR
+			return
+		}
+		bindData.BindCard = bindCard
+		rsp.Data = bindData
+		return
+	}
+	bindCard.CardGid = req.CardId
+	err = models.CreateWeixinContactBindCard(bindCard)
+	if err != nil {
+		holmes.Error("create bind card error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	bindData.BindCard = bindCard
+	rsp.Data = bindData
+}

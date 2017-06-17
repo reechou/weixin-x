@@ -119,3 +119,13 @@ type AddContact struct {
 	Myself      string  `json:"myself"`
 	ContactData Contact `json:"contactData"`
 }
+
+type WeixinContactBindReq struct {
+	Myself string `json:"myself"`
+	WxId   string `json:"wxId"`
+	CardId string `json:"cardId"`
+}
+
+type WeixinContactBindRsp struct {
+	BindCard interface{} `json:"bindCard"`
+}

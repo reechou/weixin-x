@@ -18,6 +18,7 @@ type Weixin struct {
 	TodayAddContactNum int64  `xorm:"not null default 0 int" json:"todayAddContactNum"`
 	LastAddContactTime int64  `xorm:"not null default 0 int" json:"-"`
 	Desc               string `xorm:"not null default '' varchar(128)" json:"desc"`
+	IfWatch            int64  `xorm:"not null default 0 int index" json:"ifWatch"`
 	CreatedAt          int64  `xorm:"not null default 0 int" json:"createAt"`
 	UpdatedAt          int64  `xorm:"not null default 0 int" json:"-"`
 }
@@ -131,6 +132,15 @@ func UpdateWeixinLastSyncContacts(info *Weixin) error {
 	affected, err := x.ID(info.ID).Cols("last_sync_contacts", "updated_at").Update(info)
 	if affected == 0 {
 		return fmt.Errorf("weixin update last_sync_contacts error")
+	}
+	return err
+}
+
+func UpdateWeixinIfWatch(info *Weixin) error {
+	info.UpdatedAt = time.Now().Unix()
+	affected, err := x.ID(info.ID).Cols("if_watch", "updated_at").Update(info)
+	if affected == 0 {
+		return fmt.Errorf("weixin update if_watch error")
 	}
 	return err
 }

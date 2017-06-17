@@ -59,6 +59,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/get_task", self.GetTask)
 	http.HandleFunc("/weixin/sync_contacts", self.SyncContacts)
 	http.HandleFunc("/weixin/add_contact", self.AddContact)
+	http.HandleFunc("/weixin/get_contact_bind", self.GetWeixinContactBind)
 
 	http.HandleFunc("/weixin/get_all_weixin", self.GetAllWeixin)
 	http.HandleFunc("/weixin/get_all_verify", self.GetAllVerifySetting)
