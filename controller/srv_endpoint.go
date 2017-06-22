@@ -686,16 +686,17 @@ func (self *Logic) GetWeixinContactBind(w http.ResponseWriter, r *http.Request) 
 	}
 	
 	bindCard := &models.WeixinContactBindCard{
-		WxId: req.WxId,
+		Myself: req.Myself,
+		WxId:   req.WxId,
 	}
 	
 	bindData := proto.WeixinContactBindRsp{}
 	
 	// no bind
-	bindCard.CardGid = req.CardId
-	bindData.BindCard = bindCard
-	rsp.Data = bindData
-	return
+	//bindCard.CardGid = req.CardId
+	//bindData.BindCard = bindCard
+	//rsp.Data = bindData
+	//return
 	
 	has, err := models.GetWeixinContactBindCard(bindCard)
 	if err != nil {

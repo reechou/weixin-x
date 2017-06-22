@@ -9,7 +9,8 @@ import (
 
 type WeixinContactBindCard struct {
 	ID        int64  `xorm:"pk autoincr" json:"id"`
-	WxId      string `xorm:"not null default '' varchar(128) unique" json:"wxId"`
+	Myself    string `xorm:"not null default '' varchar(128) unique(mywxid)" json:"myself"`
+	WxId      string `xorm:"not null default '' varchar(128) unique(mywxid)" json:"wxId"`
 	CardGid   string `xorm:"not null default '' varchar(64)" json:"cardGid"`
 	CreatedAt int64  `xorm:"not null default 0 int" json:"createAt"`
 	UpdatedAt int64  `xorm:"not null default 0 int" json:"-"`
@@ -35,12 +36,12 @@ func CreateWeixinContactBindCard(info *WeixinContactBindCard) error {
 }
 
 func GetWeixinContactBindCard(info *WeixinContactBindCard) (bool, error) {
-	has, err := x.Where("wx_id = ?", info.WxId).Get(info)
+	has, err := x.Where("myself = ?", info.Myself).And("wx_id = ?", info.WxId).Get(info)
 	if err != nil {
 		return false, err
 	}
 	if !has {
-		holmes.Debug("cannot find weixin contact bind card from wxid[%s]", info.WxId)
+		holmes.Debug("cannot find weixin contact bind card from wxid[%s-%s]", info.Myself, info.WxId)
 		return false, nil
 	}
 	return true, nil
