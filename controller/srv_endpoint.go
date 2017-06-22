@@ -688,13 +688,21 @@ func (self *Logic) GetWeixinContactBind(w http.ResponseWriter, r *http.Request) 
 	bindCard := &models.WeixinContactBindCard{
 		WxId: req.WxId,
 	}
+	
+	bindData := proto.WeixinContactBindRsp{}
+	
+	// no bind
+	bindCard.CardGid = req.CardId
+	bindData.BindCard = bindCard
+	rsp.Data = bindData
+	return
+	
 	has, err := models.GetWeixinContactBindCard(bindCard)
 	if err != nil {
 		holmes.Error("get bind card error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	bindData := proto.WeixinContactBindRsp{}
 	if has {
 		if bindCard.CardGid != "" {
 			bindData.BindCard = bindCard
