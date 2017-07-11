@@ -321,7 +321,7 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 	
 	// get sync task
 	now := time.Now().Unix()
-	if now - weixin.LastSyncContacts > 86400 {
+	if now - weixin.LastSyncContacts > 604800 {
 		taskList = append(taskList, proto.Task{
 			TaskType: proto.TASK_ID_MODIFY_SYNC_CONTACTS,
 		})
