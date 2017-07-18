@@ -66,6 +66,7 @@ type ContactsMass struct {
 	CardMsgs     []string  `json:"cardMsgs"`
 	PicMsg       string    `json:"picMsg"`
 	LinkMsgs     []LinkMsg `json:"linkMsgs"`
+	Friends      []string  `json:"friends"`
 }
 
 type FriendsCircle struct {

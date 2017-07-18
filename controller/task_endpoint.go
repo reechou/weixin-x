@@ -196,7 +196,7 @@ func (self *Logic) CreateWeixinTask(w http.ResponseWriter, r *http.Request) {
 
 func (self *Logic) transferTask(taskType int64, data string) interface{} {
 	switch taskType {
-	case proto.TASK_ID_CONTACTS_MASS, proto.TASK_ID_CONTACTS_GROUPS_MASS:
+	case proto.TASK_ID_CONTACTS_MASS, proto.TASK_ID_CONTACTS_GROUPS_MASS, proto.TASK_ID_SOME_CONTACTS_MASS:
 		task := &proto.ContactsMass{}
 		err := json.Unmarshal([]byte(data), task)
 		if err != nil {
