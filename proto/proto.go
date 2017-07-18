@@ -57,6 +57,7 @@ type LinkMsg struct {
 	Desc       string `json:"desc"`
 	LinkUrl    string `json:"linkUrl"`
 	ShowPicUrl string `json:"showPicUrl"`
+	DataUrl    string `json:"dataUrl"`
 }
 
 type ContactsMass struct {
