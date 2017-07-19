@@ -254,6 +254,11 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//holmes.Debug("get task req: %v", req)
+	
+	if req.Wechat == "" {
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
 
 	weixin := &models.Weixin{
 		Wechat: req.Wechat,
@@ -307,7 +312,7 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if weixin.ID == 10 {
-		holmes.Debug("get wx task list: %v", wxTask)
+		holmes.Debug("[debug] get wxid-10 task list: %v", wxTask)
 	}
 	if wxTask != nil && len(wxTask) != 0 {
 		for _, v := range wxTask {
