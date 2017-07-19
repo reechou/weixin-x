@@ -20,18 +20,18 @@ func CreateWeixinContactBindCard(info *WeixinContactBindCard) error {
 	if info.WxId == "" {
 		return fmt.Errorf("wechat cannot be nil.")
 	}
-	
+
 	now := time.Now().Unix()
 	info.CreatedAt = now
 	info.UpdatedAt = now
-	
+
 	_, err := x.Insert(info)
 	if err != nil {
 		holmes.Error("create weixin contact bind card error: %v", err)
 		return err
 	}
 	holmes.Info("create weixin contact bind card[%v] success.", info)
-	
+
 	return nil
 }
 

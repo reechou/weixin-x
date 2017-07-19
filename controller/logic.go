@@ -12,7 +12,7 @@ import (
 
 type Logic struct {
 	sync.Mutex
-	
+
 	cw *ContactWorker
 
 	cfg *config.Config

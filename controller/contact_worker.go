@@ -30,7 +30,7 @@ func NewContactWorker() *ContactWorker {
 		cw.wg.Add(1)
 		go cw.runWorker()
 	}
-	
+
 	holmes.Debug("contact workers started.")
 
 	return cw
@@ -74,7 +74,7 @@ func (self *ContactWorker) runSyncContacts(c *proto.SyncContacts) {
 		holmes.Error("Has no this wxid[%s]", c.Myself)
 		return
 	}
-	
+
 	holmes.Debug("wechat[%s] nick[%s] run sync contacts starting.", weixin.Wechat, weixin.NickName)
 
 	for _, v := range c.ContactData {
@@ -109,6 +109,6 @@ func (self *ContactWorker) runSyncContacts(c *proto.SyncContacts) {
 			holmes.Error("create weixin contact error: %v", err)
 		}
 	}
-	
+
 	holmes.Debug("wechat[%s] nick[%s] run sync contacts end.", weixin.Wechat, weixin.NickName)
 }

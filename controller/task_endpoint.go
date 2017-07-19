@@ -3,13 +3,13 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 	"strings"
+	"time"
 
+	"github.com/jinzhu/now"
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/models"
 	"github.com/reechou/weixin-x/proto"
-	"github.com/jinzhu/now"
 )
 
 func (self *Logic) CreateTask(w http.ResponseWriter, r *http.Request) {
@@ -254,7 +254,7 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//holmes.Debug("get task req: %v", req)
-	
+
 	if req.Wechat == "" {
 		rsp.Code = proto.RESPONSE_ERR
 		return
@@ -333,33 +333,33 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 				})
 			}
 		}
-		
+
 		err = models.UpdateWeixinTaskListFromWeixinId(weixin.ID)
 		if err != nil {
 			holmes.Error("update weixin if exec task error: %v", err)
 		}
 	}
-	
+
 	// get sync task
 	now := time.Now().Unix()
-	if now - weixin.LastSyncContacts > 604800 {
+	if now-weixin.LastSyncContacts > 604800 {
 		taskList = append(taskList, proto.Task{
 			TaskType: proto.TASK_ID_MODIFY_SYNC_CONTACTS,
 		})
-		
+
 		weixin.LastSyncContacts = now
 		err = models.UpdateWeixinLastSyncContacts(weixin)
 		if err != nil {
 			holmes.Error("update weixin last sync contacts error: %v", err)
 		}
 	}
-	
+
 	weixin.LastHeartbeat = now
 	err = models.UpdateWeixinLastHeartbeat(weixin)
 	if err != nil {
 		holmes.Error("update weixin last heatbeat error: %v weixin: %v", err, weixin)
 	}
-	
+
 	rsp.Data = taskList
 }
 
@@ -387,18 +387,18 @@ func (self *Logic) SyncContacts(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &proto.SyncContacts{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("SyncContacts json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	self.cw.Sync(req)
 }
 
@@ -407,18 +407,18 @@ func (self *Logic) AddContact(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &proto.AddContact{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("AddContact json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	weixin := &models.Weixin{
 		WxId: req.Myself,
 	}
@@ -436,19 +436,19 @@ func (self *Logic) AddContact(w http.ResponseWriter, r *http.Request) {
 	if req.ContactData.UserName == "" {
 		return
 	}
-	
+
 	defer func() {
 		beginOfDay := now.BeginningOfDay().Unix()
 		if weixin.LastAddContactTime < beginOfDay {
 			weixin.TodayAddContactNum = 0
 		}
-		weixin.TodayAddContactNum = weixin.TodayAddContactNum+1
+		weixin.TodayAddContactNum = weixin.TodayAddContactNum + 1
 		err = models.UpdateWeixinAddContact(weixin)
 		if err != nil {
 			holmes.Error("update weixin add contact error: %v", err)
 		}
 	}()
-	
+
 	wc := &models.WeixinContact{
 		UserName: req.ContactData.UserName,
 	}
@@ -462,16 +462,16 @@ func (self *Logic) AddContact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	wc = &models.WeixinContact{
-		WeixinId:    weixin.ID,
-		UserName:    req.ContactData.UserName,
-		AliasName:   req.ContactData.AliasName,
-		NickName:    req.ContactData.NickName,
-		PhoneNumber: req.ContactData.PhoneNumber,
-		Country:     req.ContactData.Country,
-		Province:    req.ContactData.Province,
-		City:        req.ContactData.City,
-		Sex:         req.ContactData.Sex,
-		Remark:      req.ContactData.Remark,
+		WeixinId:       weixin.ID,
+		UserName:       req.ContactData.UserName,
+		AliasName:      req.ContactData.AliasName,
+		NickName:       req.ContactData.NickName,
+		PhoneNumber:    req.ContactData.PhoneNumber,
+		Country:        req.ContactData.Country,
+		Province:       req.ContactData.Province,
+		City:           req.ContactData.City,
+		Sex:            req.ContactData.Sex,
+		Remark:         req.ContactData.Remark,
 		AddContactTime: time.Now().Unix(),
 	}
 	err = models.CreateWeixinContact(wc)
