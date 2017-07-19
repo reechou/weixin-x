@@ -745,14 +745,27 @@ func (self *Logic) GetWeixinFriends(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	
+	type WeixinFriends struct {
+		Count int64                  `json:"count"`
+		List  []models.WeixinContact `json:"list"`
+	}
+	result := new(WeixinFriends)
+	var err error
+	result.Count, err = models.GetWeixinContactCount(req.WeixinId)
+	if err != nil {
+		holmes.Error("get weixin contact count error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
 
-	list, err := models.GetWeixinContactList(req.WeixinId, req.Offset, req.Num)
+	result.List, err = models.GetWeixinContactList(req.WeixinId, req.Offset, req.Num)
 	if err != nil {
 		holmes.Error("get weixin contact error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	rsp.Data = list
+	rsp.Data = result
 }
 
 func (self *Logic) GetWxFriendTagList(w http.ResponseWriter, r *http.Request) {
@@ -838,5 +851,26 @@ func (self *Logic) CreateSelectedFriendsTask(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		holmes.Error("create weixin task list error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
+	}
+}
+
+func (self *Logic) DeleteWxFriendTag(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	req := &models.WxTagFriend{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("DeleteWxFriendTag json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.DelWxTagFriend(req)
+	if err != nil {
+		holmes.Error("delete wx friend tag error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
 	}
 }

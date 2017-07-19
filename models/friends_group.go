@@ -25,3 +25,14 @@ func GetWxFriendTagList() ([]WxFriendTag, error) {
 	}
 	return list, nil
 }
+
+func DelWxTagFriend(info *WxTagFriend) error {
+	_, err := x.Where("weixin_id = ?", info.WeixinId).
+		And("tag_id = ?", info.TagId).
+		And("wx_contact_id = ?", info.WxContactId).
+		Delete(info)
+	if err != nil {
+		return err
+	}
+	return nil
+}

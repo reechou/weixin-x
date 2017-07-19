@@ -45,6 +45,15 @@ func GetWeixinContact(info *WeixinContact) (bool, error) {
 	return true, nil
 }
 
+func GetWeixinContactCount(weixinId int64) (int64, error) {
+	count, err := x.Where("weixin_id = ?", weixinId).Count(&WeixinContact{})
+	if err != nil {
+		holmes.Error("get weixin contact count error: %v", err)
+		return 0, err
+	}
+	return count, nil
+}
+
 func GetWeixinContactList(weixinId, offset, num int64) ([]WeixinContact, error) {
 	var list []WeixinContact
 	err := x.Where("weixin_id = ?", weixinId).
