@@ -306,6 +306,7 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	holmes.Debug("get wx task list: %v", wxTask)
 	if wxTask != nil && len(wxTask) != 0 {
 		for _, v := range wxTask {
 			var friends []string
