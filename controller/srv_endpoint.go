@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/reechou/holmes"
@@ -87,18 +88,18 @@ func (self *Logic) UpdateWeixinDesc(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &models.Weixin{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("UpdateWeixinDesc json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.UpdateWeixinDesc(req)
 	if err != nil {
 		holmes.Error("update weixin desc error: %v", err)
@@ -677,27 +678,27 @@ func (self *Logic) GetWeixinContactBind(w http.ResponseWriter, r *http.Request) 
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	req := &proto.WeixinContactBindReq{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("GetWeixinContactBindCard json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	bindCard := &models.WeixinContactBindCard{
 		Myself: req.Myself,
 		WxId:   req.WxId,
 	}
-	
+
 	bindData := proto.WeixinContactBindRsp{}
-	
+
 	// no bind
 	//bindCard.CardGid = req.CardId
 	//bindData.BindCard = bindCard
 	//rsp.Data = bindData
 	//return
-	
+
 	has, err := models.GetWeixinContactBindCard(bindCard)
 	if err != nil {
 		holmes.Error("get bind card error: %v", err)
@@ -730,4 +731,112 @@ func (self *Logic) GetWeixinContactBind(w http.ResponseWriter, r *http.Request) 
 	}
 	bindData.BindCard = bindCard
 	rsp.Data = bindData
+}
+
+func (self *Logic) GetWeixinFriends(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+
+	req := &proto.GetFriendsReq{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetWeixinFriends json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+
+	list, err := models.GetWeixinContactList(req.WeixinId, req.Offset, req.Num)
+	if err != nil {
+		holmes.Error("get weixin contact error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
+}
+
+func (self *Logic) GetWxFriendTagList(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+
+	list, err := models.GetWxFriendTagList()
+	if err != nil {
+		holmes.Error("get weixin friends tag list error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
+}
+
+func (self *Logic) GetWeixinFriendsFromTag(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+
+	req := &proto.GetFriendsFromTagReq{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetWeixinFriendsFromTag json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+
+	list, err := models.GetWxTagFriendList(req.WeixinId, req.TagId)
+	if err != nil {
+		holmes.Error("get weixin contact from tag error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
+}
+
+func (self *Logic) CreateSelectedFriendsTask(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+
+	req := &proto.CreateSelectedFriendsTaskReq{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("CreateSelectedFriendsTask json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+
+	if req.TagId == 0 {
+		task := &models.WeixinTaskList{
+			WeixinId:     req.WeixinId,
+			WeixinTaskId: req.WeixinTaskId,
+			Friends:      strings.Join(req.Friends, ","),
+		}
+		err := models.CreateWeixinTaskList(task)
+		if err != nil {
+			holmes.Error("create weixin task list error: %v", err)
+			rsp.Code = proto.RESPONSE_ERR
+		}
+		return
+	}
+
+	tagFriendList, err := models.GetWxTagFriendList(req.WeixinId, req.TagId)
+	if err != nil {
+		holmes.Error("get weixin tag friend list error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	var friends []string
+	for _, v := range tagFriendList {
+		friends = append(friends, v.WeixinContact.UserName)
+	}
+	task := &models.WeixinTaskList{
+		WeixinId:     req.WeixinId,
+		WeixinTaskId: req.WeixinTaskId,
+		Friends:      strings.Join(friends, ","),
+	}
+	err = models.CreateWeixinTaskList(task)
+	if err != nil {
+		holmes.Error("create weixin task list error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+	}
 }

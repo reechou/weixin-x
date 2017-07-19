@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
+	"strings"
 
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/models"
@@ -194,7 +195,7 @@ func (self *Logic) CreateWeixinTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (self *Logic) transferTask(taskType int64, data string) interface{} {
+func (self *Logic) transferTask(taskType int64, data string, friends []string) interface{} {
 	switch taskType {
 	case proto.TASK_ID_CONTACTS_MASS, proto.TASK_ID_CONTACTS_GROUPS_MASS, proto.TASK_ID_SOME_CONTACTS_MASS:
 		task := &proto.ContactsMass{}
@@ -202,6 +203,9 @@ func (self *Logic) transferTask(taskType int64, data string) interface{} {
 		if err != nil {
 			holmes.Error("json unmarshal error: %v", err)
 			return nil
+		}
+		if friends != nil {
+			task.Friends = friends
 		}
 		return task
 	case proto.TASK_ID_FRIENDS_CIRCLE:
@@ -277,7 +281,7 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 		}
 		for _, v := range wxTask {
 			holmes.Debug("default task: %v", v)
-			task := self.transferTask(v.TaskType, v.Data)
+			task := self.transferTask(v.TaskType, v.Data, nil)
 			if task != nil {
 				taskList = append(taskList, proto.Task{
 					TaskType:  v.TaskType,
@@ -295,7 +299,8 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get normal task list
-	wxTask, err := models.GetWeixinTaskList(weixin.ID)
+	//wxTask, err := models.GetWeixinTaskList(weixin.ID)
+	wxTask, err := models.GetWxTaskList(weixin.ID)
 	if err != nil {
 		holmes.Error("get weixin task list error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
@@ -303,11 +308,19 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 	}
 	if wxTask != nil && len(wxTask) != 0 {
 		for _, v := range wxTask {
-			task := self.transferTask(v.TaskType, v.Data)
+			var friends []string
+			if v.WeixinTaskList.Friends != "" {
+				friends = strings.Split(v.WeixinTaskList.Friends, ",")
+			}
+			task := self.transferTask(v.WeixinTask.TaskType, v.WeixinTask.Data, friends)
 			if task != nil {
+				taskType := v.WeixinTask.TaskType
+				if v.WeixinTaskList.Friends != "" {
+					taskType = proto.TASK_ID_SOME_CONTACTS_MASS
+				}
 				taskList = append(taskList, proto.Task{
-					TaskType:  v.TaskType,
-					IfDefault: v.IfDefault,
+					TaskType:  taskType,
+					IfDefault: v.WeixinTask.IfDefault,
 					Data:      task,
 				})
 			}

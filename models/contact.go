@@ -44,3 +44,15 @@ func GetWeixinContact(info *WeixinContact) (bool, error) {
 	}
 	return true, nil
 }
+
+func GetWeixinContactList(weixinId, offset, num int64) ([]WeixinContact, error) {
+	var list []WeixinContact
+	err := x.Where("weixin_id = ?", weixinId).
+		Limit(int(num), int(offset)).
+		Desc("add_contact_time").
+		Find(&list)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}

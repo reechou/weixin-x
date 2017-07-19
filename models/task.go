@@ -17,12 +17,13 @@ type WeixinTask struct {
 }
 
 type WeixinTaskList struct {
-	ID           int64 `xorm:"pk autoincr" json:"id"`
-	WeixinId     int64 `xorm:"not null default 0 int index" json:"weixinId"`
-	WeixinTaskId int64 `xorm:"not null default 0 int" json:"weixinTaskId"`
-	IfExec       int64 `xorm:"not null default 0 int index" json:"ifExec"`
-	CreatedAt    int64 `xorm:"not null default 0 int" json:"createAt"`
-	UpdatedAt    int64 `xorm:"not null default 0 int" json:"-"`
+	ID           int64  `xorm:"pk autoincr" json:"id"`
+	WeixinId     int64  `xorm:"not null default 0 int index" json:"weixinId"`
+	WeixinTaskId int64  `xorm:"not null default 0 int index" json:"weixinTaskId"`
+	Friends      string `xorm:"text" json:"friends"`
+	IfExec       int64  `xorm:"not null default 0 int index" json:"ifExec"`
+	CreatedAt    int64  `xorm:"not null default 0 int" json:"createAt"`
+	UpdatedAt    int64  `xorm:"not null default 0 int" json:"-"`
 }
 
 func CreateWeixinTask(info *WeixinTask) error {

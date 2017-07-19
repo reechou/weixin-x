@@ -131,3 +131,21 @@ type WeixinContactBindReq struct {
 type WeixinContactBindRsp struct {
 	BindCard interface{} `json:"bindCard"`
 }
+
+type GetFriendsReq struct {
+	WeixinId int64 `json:"weixinId"`
+	Offset   int64 `json:"offset"`
+	Num      int64 `json:"num"`
+}
+
+type GetFriendsFromTagReq struct {
+	WeixinId int64 `json:"weixinId"`
+	TagId    int64 `json:"tagId"`
+}
+
+type CreateSelectedFriendsTaskReq struct {
+	WeixinId     int64    `json:"weixinId"`
+	WeixinTaskId int64    `json:"weixinTaskId"`
+	TagId        int64    `json:"tagId"`
+	Friends      []string `json:"friends"`
+}
