@@ -10,7 +10,7 @@ func (WxTaskList) TableName() string {
 }
 
 func GetWxTaskList(weixinId int64) ([]WxTaskList, error) {
-	list := make([]WxTagFriendList, 0)
+	list := make([]WxTaskList, 0)
 	err := x.Join("LEFT", "weixin_task", "weixin_task_list.weixin_task_id = weixin_task.id").
 		Where("weixin_task_list.weixin_id = ?", weixinId).
 		And("weixin_task_list.if_exec = 0").
