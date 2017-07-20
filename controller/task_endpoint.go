@@ -480,4 +480,13 @@ func (self *Logic) AddContact(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	friendTag := &models.WxTagFriend{
+		WeixinId:    weixin.ID,
+		TagId:       1,
+		WxContactId: wc.ID,
+	}
+	err = models.CreateWxTagFriend(friendTag)
+	if err != nil {
+		holmes.Error("create wx tag friend error: %v", err)
+	}
 }

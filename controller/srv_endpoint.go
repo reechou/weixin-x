@@ -731,6 +731,18 @@ func (self *Logic) GetWeixinContactBind(w http.ResponseWriter, r *http.Request) 
 	}
 	bindData.BindCard = bindCard
 	rsp.Data = bindData
+	// delete new tag
+	newTagInfo, err := models.GetWxTagFriendInfoOfNew(req.WxId)
+	if err != nil {
+		holmes.Error("get wx tag friend info of new error: %v", err)
+		return
+	}
+	if newTagInfo != nil {
+		err = models.DelWxTagFriend(&newTagInfo.WxTagFriend)
+		if err != nil {
+			holmes.Error("del wx tag friend error: %v", err)
+		}
+	}
 }
 
 func (self *Logic) GetWeixinFriends(w http.ResponseWriter, r *http.Request) {
@@ -766,6 +778,28 @@ func (self *Logic) GetWeixinFriends(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rsp.Data = result
+}
+
+func (self *Logic) GetWeixinFriendsFromTime(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	req := &proto.GetFriendsFromTimeReq{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetWeixinFriendsFromTime json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	list, err := models.GetWeixinContactListFromTime(req.WeixinId, req.StartTime, req.EndTime)
+	if err != nil {
+		holmes.Error("get weixin contact error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
 }
 
 func (self *Logic) GetWxFriendTagList(w http.ResponseWriter, r *http.Request) {

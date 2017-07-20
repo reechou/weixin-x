@@ -138,6 +138,12 @@ type GetFriendsReq struct {
 	Num      int64 `json:"num"`
 }
 
+type GetFriendsFromTimeReq struct {
+	WeixinId  int64 `json:"weixinId"`
+	StartTime int64 `json:"startTime"`
+	EndTime   int64 `json:"endTime"`
+}
+
 type GetFriendsFromTagReq struct {
 	WeixinId int64 `json:"weixinId"`
 	TagId    int64 `json:"tagId"`

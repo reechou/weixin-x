@@ -62,6 +62,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/get_contact_bind", self.GetWeixinContactBind)
 	http.HandleFunc("/weixin/get_weixin_friends", self.GetWeixinFriends)
 	http.HandleFunc("/weixin/get_weixin_friends_tags", self.GetWxFriendTagList)
+	http.HandleFunc("/weixin/get_weixin_friends_from_time", self.GetWeixinFriendsFromTime)
 	http.HandleFunc("/weixin/get_weixin_friends_from_tag", self.GetWeixinFriendsFromTag)
 	http.HandleFunc("/weixin/delete_weixin_friend_tag", self.DeleteWxFriendTag)
 	http.HandleFunc("/weixin/create_selected_friends_task", self.CreateSelectedFriendsTask)
