@@ -145,8 +145,10 @@ type GetFriendsFromTimeReq struct {
 }
 
 type GetFriendsFromTagReq struct {
-	WeixinId int64 `json:"weixinId"`
-	TagId    int64 `json:"tagId"`
+	WeixinId  int64 `json:"weixinId"`
+	TagId     int64 `json:"tagId"`
+	StartTime int64 `json:"startTime"`
+	EndTime   int64 `json:"endTime"`
 }
 
 type CreateSelectedFriendsTaskReq struct {

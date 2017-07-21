@@ -830,7 +830,7 @@ func (self *Logic) GetWeixinFriendsFromTag(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	list, err := models.GetWxTagFriendList(req.WeixinId, req.TagId)
+	list, err := models.GetWxTagFriendList(req.WeixinId, req.TagId, req.StartTime, req.EndTime)
 	if err != nil {
 		holmes.Error("get weixin contact from tag error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
@@ -866,7 +866,7 @@ func (self *Logic) CreateSelectedFriendsTask(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	tagFriendList, err := models.GetWxTagFriendList(req.WeixinId, req.TagId)
+	tagFriendList, err := models.GetWxTagFriendList(req.WeixinId, req.TagId, 0, 0)
 	if err != nil {
 		holmes.Error("get weixin tag friend list error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
