@@ -17,6 +17,9 @@ type Weixin struct {
 	LastSyncContacts   int64  `xorm:"not null default 0 int" json:"lastSyncContacts"`
 	TodayAddContactNum int64  `xorm:"not null default 0 int" json:"todayAddContactNum"`
 	LastAddContactTime int64  `xorm:"not null default 0 int" json:"-"`
+	WxType             int64  `xorm:"not null default 0 int index" json:"wxType"`
+	QrcodeUrl          string `xorm:"not null default '' varchar(128)" json:"qrcodeUrl"`
+	Status             int64  `xorm:"not null default 0 int index" json:"status"`
 	Desc               string `xorm:"not null default '' varchar(128)" json:"desc"`
 	IfWatch            int64  `xorm:"not null default 0 int index" json:"ifWatch"`
 	CreatedAt          int64  `xorm:"not null default 0 int" json:"createAt"`

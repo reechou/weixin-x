@@ -908,3 +908,67 @@ func (self *Logic) DeleteWxFriendTag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (self *Logic) CreateTimerTask(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	req := &models.TimerTask{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("CreateTimerTask json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.CreateTimerTask(req)
+	if err != nil {
+		holmes.Error("create timer task error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
+func (self *Logic) GetTimerTaskList(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	req := &proto.GetTimerTaskListFromWeixinReq{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetTimerTaskList json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	list, err := models.GetTimerTaskListFromWeixin(req.WeixinId)
+	if err != nil {
+		holmes.Error("get timer task list error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
+}
+
+func (self *Logic) DeleteTimerTask(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	req := &models.TimerTask{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("DelTimerTask json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.DelTimerTask(req)
+	if err != nil {
+		holmes.Error("delete timer task error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}

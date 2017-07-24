@@ -157,3 +157,7 @@ type CreateSelectedFriendsTaskReq struct {
 	TagId        int64    `json:"tagId"`
 	Friends      []string `json:"friends"`
 }
+
+type GetTimerTaskListFromWeixinReq struct {
+	WeixinId int64 `json:"weixinId"`
+}

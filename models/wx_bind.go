@@ -41,7 +41,7 @@ func GetWeixinContactBindCard(info *WeixinContactBindCard) (bool, error) {
 		return false, err
 	}
 	if !has {
-		holmes.Debug("cannot find weixin contact bind card from wxid[%s-%s]", info.Myself, info.WxId)
+		//holmes.Debug("cannot find weixin contact bind card from wxid[%s-%s]", info.Myself, info.WxId)
 		return false, nil
 	}
 	return true, nil

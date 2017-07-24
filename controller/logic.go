@@ -13,7 +13,8 @@ import (
 type Logic struct {
 	sync.Mutex
 
-	cw *ContactWorker
+	cw  *ContactWorker
+	ttw *TimerTaskWorker
 
 	cfg *config.Config
 }
@@ -23,6 +24,7 @@ func NewLogic(cfg *config.Config) *Logic {
 		cfg: cfg,
 	}
 	l.cw = NewContactWorker()
+	l.ttw = NewTimerTaskWorker(cfg)
 	l.init()
 
 	models.InitDB(cfg)
@@ -66,6 +68,9 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/get_weixin_friends_from_tag", self.GetWeixinFriendsFromTag)
 	http.HandleFunc("/weixin/delete_weixin_friend_tag", self.DeleteWxFriendTag)
 	http.HandleFunc("/weixin/create_selected_friends_task", self.CreateSelectedFriendsTask)
+	http.HandleFunc("/weixin/create_timer_task", self.CreateTimerTask)
+	http.HandleFunc("/weixin/get_timer_task_list", self.GetTimerTaskList)
+	http.HandleFunc("/weixin/delete_timer_task", self.DeleteTimerTask)
 
 	http.HandleFunc("/weixin/get_all_weixin", self.GetAllWeixin)
 	http.HandleFunc("/weixin/get_all_verify", self.GetAllVerifySetting)
