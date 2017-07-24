@@ -1,3 +1,4 @@
 log/*
 models/friends_group_query_test.go
 *.ini
+weixin-x.ini
