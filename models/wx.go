@@ -148,6 +148,24 @@ func UpdateWeixinIfWatch(info *Weixin) error {
 	return err
 }
 
+func UpdateWeixinQrcode(info *Weixin) error {
+	info.UpdatedAt = time.Now().Unix()
+	affected, err := x.ID(info.ID).Cols("qrcode_url", "updated_at").Update(info)
+	if affected == 0 {
+		return fmt.Errorf("weixin update qrcode url error")
+	}
+	return err
+}
+
+func UpdateWeixinStatus(info *Weixin) error {
+	info.UpdatedAt = time.Now().Unix()
+	affected, err := x.ID(info.ID).Cols("status", "updated_at").Update(info)
+	if affected == 0 {
+		return fmt.Errorf("weixin update qrcode url error")
+	}
+	return err
+}
+
 func GetWeixinCount() (int64, error) {
 	count, err := x.Count(&Weixin{})
 	if err != nil {

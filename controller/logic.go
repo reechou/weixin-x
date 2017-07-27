@@ -15,6 +15,7 @@ type Logic struct {
 
 	cw  *ContactWorker
 	ttw *TimerTaskWorker
+	wmm *WeixinMonitorManager
 
 	cfg *config.Config
 }
@@ -37,6 +38,8 @@ func (self *Logic) init() {
 
 	http.HandleFunc("/weixin/create_weixin", self.CreateWeixin)
 	http.HandleFunc("/weixin/update_weixin_desc", self.UpdateWeixinDesc)
+	http.HandleFunc("/weixin/update_weixin_qrcode", self.UpdateWeixinQrcode)
+	http.HandleFunc("/weixin/update_weixin_status", self.UpdateWeixinStatus)
 	http.HandleFunc("/weixin/delete_weixin", self.DeleteWeixin)
 	http.HandleFunc("/weixin/create_verify_setting", self.CreateWeixinVerifySetting)
 	http.HandleFunc("/weixin/get_verify_setting", self.GetWeixinVerifySetting)
@@ -71,6 +74,21 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/create_timer_task", self.CreateTimerTask)
 	http.HandleFunc("/weixin/get_timer_task_list", self.GetTimerTaskList)
 	http.HandleFunc("/weixin/delete_timer_task", self.DeleteTimerTask)
+	
+	// liebian
+	http.HandleFunc("/weixin/create_liebian_type", self.CreateLiebianType)
+	http.HandleFunc("/weixin/delete_liebian_type", self.DeleteLiebianType)
+	http.HandleFunc("/weixin/get_liebian_type_list", self.GetLiebianTypeList)
+	http.HandleFunc("/weixin/create_weixin_group", self.CreateWeixinGroup)
+	http.HandleFunc("/weixin/delete_weixin_group", self.DeleteWeixinGroup)
+	http.HandleFunc("/weixin/get_weixin_group_list", self.GetWeixinGroupList)
+	http.HandleFunc("/weixin/create_weixin_group_member_list", self.CreateWeixinGroupMemberList)
+	http.HandleFunc("/weixin/delete_weixin_group_member", self.DeleteWeixinGroupMember)
+	http.HandleFunc("/weixin/get_weixin_group_member_list", self.GetWeixinGroupMemberList)
+	http.HandleFunc("/weixin/create_lianbian_pool", self.CreateLiebianPool)
+	http.HandleFunc("/weixin/delete_lianbian_pool", self.DeleteLiebianPool)
+	http.HandleFunc("/weixin/get_lianbian_pool", self.GetLiebianPool)
+	http.HandleFunc("/weixin/get_user_lianbian_pool", self.GetUserLiebianInfo)
 
 	http.HandleFunc("/weixin/get_all_weixin", self.GetAllWeixin)
 	http.HandleFunc("/weixin/get_all_verify", self.GetAllVerifySetting)
@@ -87,6 +105,8 @@ func (self *Logic) Run() {
 	if self.cfg.Debug {
 		EnableDebug()
 	}
+	// start monitor
+	self.wmm = NewWeixinMonitorManager()
 
 	holmes.Info("server starting on[%s]..", self.cfg.Host)
 	holmes.Infoln(http.ListenAndServe(self.cfg.Host, nil))

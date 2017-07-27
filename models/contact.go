@@ -69,8 +69,8 @@ func GetWeixinContactList(weixinId, offset, num int64) ([]WeixinContact, error) 
 func GetWeixinContactListFromTime(weixinId, startTime, endTime int64) ([]WeixinContact, error) {
 	var list []WeixinContact
 	err := x.Where("weixin_id = ?", weixinId).
-		And("add_contact_time > ?", startTime).
-		And("add_contact_time < ?", endTime).
+		And("add_contact_time >= ?", startTime).
+		And("add_contact_time <= ?", endTime).
 		Desc("add_contact_time").
 		Find(&list)
 	if err != nil {

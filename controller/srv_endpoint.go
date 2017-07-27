@@ -108,6 +108,56 @@ func (self *Logic) UpdateWeixinDesc(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (self *Logic) UpdateWeixinQrcode(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &models.Weixin{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("UpdateWeixinQrcode json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.UpdateWeixinQrcode(req)
+	if err != nil {
+		holmes.Error("update weixin qrcode url error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
+func (self *Logic) UpdateWeixinStatus(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &models.Weixin{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("UpdateWeixinStatus json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.UpdateWeixinStatus(req)
+	if err != nil {
+		holmes.Error("update weixin status error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
 func (self *Logic) DeleteWeixin(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
 	defer func() {

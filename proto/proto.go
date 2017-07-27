@@ -161,3 +161,22 @@ type CreateSelectedFriendsTaskReq struct {
 type GetTimerTaskListFromWeixinReq struct {
 	WeixinId int64 `json:"weixinId"`
 }
+
+type GetWeixinGroupMemberListReq struct {
+	GroupId int64 `json:"groupId"`
+}
+
+type GetLiebianPoolReq struct {
+	LiebianType int64 `json:"liebianType"`
+}
+
+type GetLiebianInfoReq struct {
+	LiebianType int64  `json:"liebianType"`
+	AppId       string `json:"appId"`
+	OpenId      string `json:"openId"`
+}
+
+type GetLiebianInfoRsp struct {
+	Status int64  `json:"status"`
+	Qrcode string `json:"qrcode"`
+}

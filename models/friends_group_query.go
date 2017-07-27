@@ -21,8 +21,8 @@ func GetWxTagFriendList(weixinId, tagId, startTime, endTime int64) ([]WxTagFrien
 		err = x.Join("LEFT", "weixin_contact", "wx_tag_friend.wx_contact_id = weixin_contact.id").
 			Where("wx_tag_friend.weixin_id = ?", weixinId).
 			And("wx_tag_friend.tag_id = ?", tagId).
-			And("weixin_contact.add_contact_time > ?", startTime).
-			And("weixin_contact.add_contact_time < ?", endTime).
+			And("weixin_contact.add_contact_time >= ?", startTime).
+			And("weixin_contact.add_contact_time <= ?", endTime).
 			Find(&list)
 	}
 	if err != nil {
