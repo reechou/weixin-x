@@ -2,7 +2,7 @@ package models
 
 import (
 	"time"
-	
+
 	"github.com/reechou/holmes"
 )
 
@@ -47,14 +47,14 @@ func CreateWxTagFriend(info *WxTagFriend) error {
 	now := time.Now().Unix()
 	info.CreatedAt = now
 	info.UpdatedAt = now
-	
+
 	_, err := x.Insert(info)
 	if err != nil {
 		holmes.Error("create WxTagFriend error: %v", err)
 		return err
 	}
 	holmes.Info("create WxTagFriend[%v] success.", info)
-	
+
 	return nil
 }
 

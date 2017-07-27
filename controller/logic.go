@@ -74,7 +74,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/create_timer_task", self.CreateTimerTask)
 	http.HandleFunc("/weixin/get_timer_task_list", self.GetTimerTaskList)
 	http.HandleFunc("/weixin/delete_timer_task", self.DeleteTimerTask)
-	
+
 	// liebian
 	http.HandleFunc("/weixin/create_liebian_type", self.CreateLiebianType)
 	http.HandleFunc("/weixin/delete_liebian_type", self.DeleteLiebianType)

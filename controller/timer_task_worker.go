@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"time"
 	"strings"
-	
+	"time"
+
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/config"
 	"github.com/reechou/weixin-x/models"
@@ -70,7 +70,7 @@ func NewTimerTaskWorker(cfg *config.Config) *TimerTaskWorker {
 		cfg:  cfg,
 		stop: make(chan struct{}),
 	}
-	
+
 	go ttw.start()
 
 	return ttw
@@ -82,7 +82,7 @@ func (self *TimerTaskWorker) Stop() {
 
 func (self *TimerTaskWorker) start() {
 	holmes.Debug("timer task worker cron start.")
-	
+
 	c := cron.New()
 	c.AddFunc(self.cfg.TimerTaskCron, self.runTimerTask)
 	c.Start()
@@ -100,10 +100,10 @@ func (self *TimerTaskWorker) runTimerTask() {
 	defer func() {
 		holmes.Debug("[timer task] run end, user time: %v.", time.Now().Sub(start))
 	}()
-	
+
 	minute := start.Minute()
 	//minute := 10
-	
+
 	timerTaskList, err := models.GetTimerTaskList()
 	if err != nil {
 		holmes.Error("get timer task list error: %v", err)
@@ -116,7 +116,7 @@ func (self *TimerTaskWorker) runTimerTask() {
 		if modId != minute {
 			continue
 		}
-		
+
 		timerInfo, ok := TimerInfoMap[v.TimeId]
 		if !ok {
 			holmes.Error("timertask[%v] cannot found timerinfo", v)

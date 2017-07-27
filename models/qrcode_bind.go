@@ -2,7 +2,7 @@ package models
 
 import (
 	"time"
-	
+
 	"github.com/reechou/holmes"
 )
 
@@ -18,14 +18,14 @@ type QrcodeBind struct {
 func CreateQrcodeBind(info *QrcodeBind) error {
 	now := time.Now().Unix()
 	info.CreatedAt = now
-	
+
 	_, err := x.Insert(info)
 	if err != nil {
 		holmes.Error("create qrcode bind error: %v", err)
 		return err
 	}
 	holmes.Info("create qrcode bind[%v] success.", info)
-	
+
 	return nil
 }
 

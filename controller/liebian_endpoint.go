@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
+	"math/rand"
 	"net/http"
 	"time"
-	"math/rand"
 
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/models"
@@ -17,18 +17,18 @@ func (self *Logic) CreateLiebianType(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &models.LiebianType{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("CreateLiebianType json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.CreateLiebianType(req)
 	if err != nil {
 		holmes.Error("create liebian type error: %v", err)
@@ -42,11 +42,11 @@ func (self *Logic) GetLiebianTypeList(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	list, err := models.GetLiebianTypeList()
 	if err != nil {
 		holmes.Error("get liebian type list error: %v", err)
@@ -61,18 +61,18 @@ func (self *Logic) DeleteLiebianType(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &models.LiebianType{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("DeleteLiebianType json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.DelLiebianType(req)
 	if err != nil {
 		holmes.Error("delete liebian type error: %v", err)
@@ -337,7 +337,7 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	
+
 	liebianList, err := models.GetLiebianPoolWeixinList(req.LiebianType)
 	if err != nil {
 		holmes.Error("get liebian pool weixin list error: %v", err)
@@ -358,13 +358,13 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 		rsp.Msg = fmt.Sprintf("get qrcode of url offset is nil")
 		return
 	}
-	
+
 	qrcodeBind.BindQrcode = result.Qrcode
 	err = models.CreateQrcodeBind(qrcodeBind)
 	if err != nil {
 		holmes.Error("create qrcode bind error: %v", err)
 	}
-	
+
 }
 
 func init() {

@@ -113,18 +113,18 @@ func (self *Logic) UpdateWeixinQrcode(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &models.Weixin{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("UpdateWeixinQrcode json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.UpdateWeixinQrcode(req)
 	if err != nil {
 		holmes.Error("update weixin qrcode url error: %v", err)
@@ -138,18 +138,18 @@ func (self *Logic) UpdateWeixinStatus(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &models.Weixin{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("UpdateWeixinStatus json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.UpdateWeixinStatus(req)
 	if err != nil {
 		holmes.Error("update weixin status error: %v", err)
@@ -807,7 +807,7 @@ func (self *Logic) GetWeixinFriends(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	type WeixinFriends struct {
 		Count int64                  `json:"count"`
 		List  []models.WeixinContact `json:"list"`
@@ -835,14 +835,14 @@ func (self *Logic) GetWeixinFriendsFromTime(w http.ResponseWriter, r *http.Reque
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	req := &proto.GetFriendsFromTimeReq{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("GetWeixinFriendsFromTime json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	list, err := models.GetWeixinContactListFromTime(req.WeixinId, req.StartTime, req.EndTime)
 	if err != nil {
 		holmes.Error("get weixin contact error: %v", err)
@@ -943,14 +943,14 @@ func (self *Logic) DeleteWxFriendTag(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	req := &models.WxTagFriend{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("DeleteWxFriendTag json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.DelWxTagFriend(req)
 	if err != nil {
 		holmes.Error("delete wx friend tag error: %v", err)
@@ -964,14 +964,14 @@ func (self *Logic) CreateTimerTask(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	req := &models.TimerTask{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("CreateTimerTask json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.CreateTimerTask(req)
 	if err != nil {
 		holmes.Error("create timer task error: %v", err)
@@ -985,14 +985,14 @@ func (self *Logic) GetTimerTaskList(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	req := &proto.GetTimerTaskListFromWeixinReq{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("GetTimerTaskList json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	list, err := models.GetTimerTaskListFromWeixin(req.WeixinId)
 	if err != nil {
 		holmes.Error("get timer task list error: %v", err)
@@ -1007,14 +1007,14 @@ func (self *Logic) DeleteTimerTask(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	req := &models.TimerTask{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("DelTimerTask json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.DelTimerTask(req)
 	if err != nil {
 		holmes.Error("delete timer task error: %v", err)

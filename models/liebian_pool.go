@@ -19,18 +19,18 @@ func CreateLiebianType(info *LiebianType) error {
 	if info.LiebianType == 0 {
 		return fmt.Errorf("liebian type be nil.")
 	}
-	
+
 	now := time.Now().Unix()
 	info.CreatedAt = now
 	info.UpdatedAt = now
-	
+
 	_, err := x.Insert(info)
 	if err != nil {
 		holmes.Error("create liebian type error: %v", err)
 		return err
 	}
 	holmes.Info("create liebian type[%v] success.", info)
-	
+
 	return nil
 }
 
@@ -53,7 +53,7 @@ func DelLiebianType(info *LiebianType) error {
 		holmes.Error("del liebian type error: %v", err)
 		return err
 	}
-	
+
 	return nil
 }
 

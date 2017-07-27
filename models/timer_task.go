@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 	"time"
-	
+
 	"github.com/reechou/holmes"
 )
 
@@ -21,14 +21,14 @@ func CreateTimerTask(info *TimerTask) error {
 	now := time.Now().Unix()
 	info.CreatedAt = now
 	info.UpdatedAt = now
-	
+
 	_, err := x.Insert(info)
 	if err != nil {
 		holmes.Error("create timer task error: %v", err)
 		return err
 	}
 	holmes.Info("create timer task[%v] success.", info)
-	
+
 	return nil
 }
 
@@ -59,6 +59,6 @@ func DelTimerTask(info *TimerTask) error {
 		holmes.Error("del timer task error: %v", err)
 		return err
 	}
-	
+
 	return nil
 }

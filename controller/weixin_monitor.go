@@ -3,9 +3,9 @@ package controller
 import (
 	"fmt"
 	"time"
-	
-	"github.com/reechou/weixin-x/models"
+
 	"github.com/reechou/holmes"
+	"github.com/reechou/weixin-x/models"
 )
 
 const (
@@ -18,7 +18,7 @@ const (
 
 type WeixinMonitor struct {
 	LiebianType int64
-	
+
 	stop chan struct{}
 	done chan struct{}
 }
@@ -26,12 +26,12 @@ type WeixinMonitor struct {
 func NewWeixinMonitor(liebianType int64) *WeixinMonitor {
 	wm := &WeixinMonitor{
 		LiebianType: liebianType,
-		stop: make(chan struct{}),
-		done: make(chan struct{}),
+		stop:        make(chan struct{}),
+		done:        make(chan struct{}),
 	}
-	
+
 	go wm.run()
-	
+
 	return wm
 }
 
@@ -63,7 +63,7 @@ func (self *WeixinMonitor) check() {
 	now := time.Now().Unix()
 	var abnormalIds []int64
 	for _, v := range weixinList {
-		if now - v.Weixin.LastHeartbeat < CHECK_HEALTH_TIME {
+		if now-v.Weixin.LastHeartbeat < CHECK_HEALTH_TIME {
 			healthNode++
 			continue
 		}

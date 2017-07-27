@@ -22,13 +22,13 @@ func NewWeixinMonitorManager() *WeixinMonitorManager {
 		stop:             make(chan struct{}),
 	}
 	wmm.getLiebianTypeList()
-	
+
 	go wmm.loopGetLiebianTypeList()
 
 	return wmm
 }
 
-func (self *WeixinMonitorManager) stop() {
+func (self *WeixinMonitorManager) Stop() {
 	close(self.stop)
 	for _, v := range self.weixinMonitorMap {
 		v.Stop()

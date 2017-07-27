@@ -1,8 +1,8 @@
 package models
 
 type LiebianWeixinPool struct {
-	LiebianPool   `xorm:"extends" json:"liebianPool"`
-	Weixin        `xorm:"extends" json:"weixin"`
+	LiebianPool `xorm:"extends" json:"liebianPool"`
+	Weixin      `xorm:"extends" json:"weixin"`
 }
 
 func (LiebianWeixinPool) TableName() string {

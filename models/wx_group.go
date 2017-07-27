@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 	"time"
-	
+
 	"github.com/reechou/holmes"
 )
 
@@ -26,14 +26,14 @@ func CreateWeixinGroup(info *WeixinGroup) error {
 	now := time.Now().Unix()
 	info.CreatedAt = now
 	info.UpdatedAt = now
-	
+
 	_, err := x.Insert(info)
 	if err != nil {
 		holmes.Error("create weixin group error: %v", err)
 		return err
 	}
 	holmes.Info("create weixin group[%v] success.", info)
-	
+
 	return nil
 }
 
@@ -56,7 +56,7 @@ func DelWeixinGroup(info *WeixinGroup) error {
 		holmes.Error("del weixin group error: %v", err)
 		return err
 	}
-	
+
 	return nil
 }
 
@@ -85,7 +85,7 @@ func DelWeixinGroupMember(info *WeixinGroupMember) error {
 		holmes.Error("del weixin group member error: %v", err)
 		return err
 	}
-	
+
 	return nil
 }
 
