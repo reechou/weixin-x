@@ -315,8 +315,13 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 		holmes.Debug("[debug] get wxid-10 task list: %v", wxTask)
 	}
 	now := time.Now().Unix()
+	var needExecTasks []int64
 	if wxTask != nil && len(wxTask) != 0 {
 		for _, v := range wxTask {
+			if now < v.ExecTime {
+				continue
+			}
+			needExecTasks = append(needExecTasks, v.ID)
 			var friends []string
 			if v.WeixinTaskList.Friends != "" {
 				friends = strings.Split(v.WeixinTaskList.Friends, ",")
@@ -334,11 +339,16 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 				})
 			}
 		}
-
-		err = models.UpdateWeixinTaskListFromWeixinId(weixin.ID)
+		
+		err = models.UpdateWeixinTaskList(needExecTasks)
 		if err != nil {
-			holmes.Error("update weixin if exec task error: %v", err)
+			holmes.Error("update weixin task list[%v] error: %v", needExecTasks, err)
 		}
+
+		//err = models.UpdateWeixinTaskListFromWeixinId(weixin.ID)
+		//if err != nil {
+		//	holmes.Error("update weixin if exec task error: %v", err)
+		//}
 	}
 
 	// get sync task
