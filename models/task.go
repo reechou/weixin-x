@@ -22,6 +22,7 @@ type WeixinTaskList struct {
 	WeixinTaskId int64  `xorm:"not null default 0 int index" json:"weixinTaskId"`
 	Friends      string `xorm:"text" json:"friends"`
 	IfExec       int64  `xorm:"not null default 0 int index" json:"ifExec"`
+	ExecTime     int64  `xorm:"not null default 0 int" json:"execTime"`
 	CreatedAt    int64  `xorm:"not null default 0 int" json:"createAt"`
 	UpdatedAt    int64  `xorm:"not null default 0 int" json:"-"`
 }

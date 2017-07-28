@@ -314,6 +314,7 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 	if weixin.ID == 10 {
 		holmes.Debug("[debug] get wxid-10 task list: %v", wxTask)
 	}
+	now := time.Now().Unix()
 	if wxTask != nil && len(wxTask) != 0 {
 		for _, v := range wxTask {
 			var friends []string
@@ -341,7 +342,6 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get sync task
-	now := time.Now().Unix()
 	if now-weixin.LastSyncContacts > 2592000 {
 		taskList = append(taskList, proto.Task{
 			TaskType: proto.TASK_ID_MODIFY_SYNC_CONTACTS,

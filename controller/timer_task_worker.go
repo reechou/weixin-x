@@ -150,6 +150,7 @@ func (self *TimerTaskWorker) runTimerTask() {
 				WeixinId:     v.WeixinId,
 				WeixinTaskId: v.TaskId,
 				Friends:      strings.Join(friendsList, ","),
+				ExecTime:     nowTime+(v.TimeId-1)*300,
 			}
 			err = models.CreateWeixinTaskList(task)
 			if err != nil {
