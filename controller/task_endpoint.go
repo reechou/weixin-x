@@ -340,9 +340,11 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		
-		err = models.UpdateWeixinTaskList(needExecTasks)
-		if err != nil {
-			holmes.Error("update weixin task list[%v] error: %v", needExecTasks, err)
+		if needExecTasks != nil && len(needExecTasks) > 0 {
+			err = models.UpdateWeixinTaskList(needExecTasks)
+			if err != nil {
+				holmes.Error("update weixin task list[%v] error: %v", needExecTasks, err)
+			}
 		}
 
 		//err = models.UpdateWeixinTaskListFromWeixinId(weixin.ID)
