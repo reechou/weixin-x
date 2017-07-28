@@ -321,7 +321,7 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 			if now < v.ExecTime {
 				continue
 			}
-			needExecTasks = append(needExecTasks, v.ID)
+			needExecTasks = append(needExecTasks, v.WeixinTaskList.ID)
 			var friends []string
 			if v.WeixinTaskList.Friends != "" {
 				friends = strings.Split(v.WeixinTaskList.Friends, ",")
