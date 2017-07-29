@@ -267,6 +267,7 @@ func (self *Logic) DeleteLiebianPool(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	holmes.Debug("delete liebian pool ids: %v", req)
 
 	err := models.DelLiebianPoolList(req)
 	if err != nil {
