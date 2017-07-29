@@ -335,6 +335,7 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 	if has {
 		if qrcodeBind.BindQrcode != "" {
 			result.Qrcode = qrcodeBind.BindQrcode
+			rsp.Data = result
 			return
 		}
 	}
