@@ -365,7 +365,7 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		holmes.Error("create qrcode bind error: %v", err)
 	}
-
+	rsp.Data = result
 }
 
 func init() {
