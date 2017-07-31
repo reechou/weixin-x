@@ -7,6 +7,11 @@ import (
 	"github.com/reechou/holmes"
 )
 
+const (
+	WX_TYPE_WECHAT = iota
+	WX_TYPE_GZH
+)
+
 type Weixin struct {
 	ID                 int64  `xorm:"pk autoincr" json:"id"`
 	WxId               string `xorm:"not null default '' varchar(128) index" json:"wxId"`
@@ -185,11 +190,11 @@ func GetWeixinList(offset, num int64) ([]Weixin, error) {
 	return list, nil
 }
 
-func GetAllWeixinList() ([]Weixin, error) {
+func GetResourceListFromType(wxType int64) ([]Weixin, error) {
 	var list []Weixin
-	err := x.Find(&list)
+	err := x.Where("wx_type = ?", wxType).Find(&list)
 	if err != nil {
-		holmes.Error("get all weixin list error: %v", err)
+		holmes.Error("get resource list error: %v", err)
 		return nil, err
 	}
 	return list, nil

@@ -7,9 +7,60 @@ import (
 	"time"
 
 	"github.com/reechou/holmes"
+	"github.com/jinzhu/now"
 	"github.com/reechou/weixin-x/models"
 	"github.com/reechou/weixin-x/proto"
 )
+
+func (self *Logic) CreateResource(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &models.Weixin{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("CreateResourcePool json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	err := models.CreateWeixin(req)
+	if err != nil {
+		holmes.Error("create weixin error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = req.ID
+}
+
+func (self *Logic) GetResourcePool(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.GetResourcePoolReq{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetResourcePool json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	list, err := models.GetResourceListFromType(req.WxType)
+	if err != nil {
+		holmes.Error("get resource list error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
+}
 
 func (self *Logic) CreateWeixin(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
@@ -676,17 +727,15 @@ func (self *Logic) GetAllWeixin(w http.ResponseWriter, r *http.Request) {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
 
-	list, err := models.GetAllWeixinList()
+	list, err := models.GetResourceListFromType(int64(models.WX_TYPE_WECHAT))
 	if err != nil {
 		holmes.Error("get all weixin error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	now := time.Now().Unix()
-	todayZero := now - (now % 86400) - 28800
+	todayZero := now.BeginningOfDay().Unix()
 	for i := 0; i < len(list); i++ {
-		addContactZero := list[i].LastAddContactTime - (list[i].LastAddContactTime % 86400) - 28800
-		if addContactZero < todayZero {
+		if list[i].LastAddContactTime < todayZero {
 			list[i].TodayAddContactNum = 0
 		}
 	}

@@ -71,9 +71,12 @@ type ContactsMass struct {
 }
 
 type FriendsCircle struct {
-	Text  string   `json:"text"`
-	Type  string   `json:"type"`
-	Media []string `json:"media"`
+	Text    string   `json:"text"`
+	Type    string   `json:"type"`
+	Media   []string `json:"media"`
+	Title   string   `json:"title"`   // for link wc
+	LinkUrl string   `json:"linkUrl"` // for link wc
+	PicUrl  string   `json:"picUrl"`  // for link wc
 }
 
 type AttentionCard struct {
@@ -179,4 +182,8 @@ type GetLiebianInfoReq struct {
 type GetLiebianInfoRsp struct {
 	Status int64  `json:"status"`
 	Qrcode string `json:"qrcode"`
+}
+
+type GetResourcePoolReq struct {
+	WxType int64 `json:"wxType"`
 }

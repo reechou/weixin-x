@@ -9,7 +9,7 @@ import (
 
 type LiebianType struct {
 	ID          int64  `xorm:"pk autoincr" json:"id"`
-	LiebianType int64  `xorm:"not null default 0 int" json:"liebianType"`
+	LiebianType int64  `xorm:"not null default 0 int unique" json:"liebianType"`
 	Desc        string `xorm:"not null default '' varchar(128)" json:"desc"`
 	CreatedAt   int64  `xorm:"not null default 0 int" json:"createAt"`
 	UpdatedAt   int64  `xorm:"not null default 0 int" json:"-"`

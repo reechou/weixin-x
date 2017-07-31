@@ -36,6 +36,8 @@ func NewLogic(cfg *config.Config) *Logic {
 func (self *Logic) init() {
 	http.HandleFunc("/robot/receive_msg", self.RobotReceiveMsg)
 
+	http.HandleFunc("/weixin/create_resource", self.CreateResource)
+	http.HandleFunc("/weixin/get_resource_pool", self.GetResourcePool)
 	http.HandleFunc("/weixin/create_weixin", self.CreateWeixin)
 	http.HandleFunc("/weixin/update_weixin_desc", self.UpdateWeixinDesc)
 	http.HandleFunc("/weixin/update_weixin_qrcode", self.UpdateWeixinQrcode)
