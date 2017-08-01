@@ -132,7 +132,9 @@ func (self *DataStatisticsWorker) runSave() {
 			self.Lock()
 			self.dataMap[k] = 0
 			self.Unlock()
-			self.nowHour = nowHour
 		}
+	}
+	if nowHour != self.nowHour {
+		self.nowHour = nowHour
 	}
 }
