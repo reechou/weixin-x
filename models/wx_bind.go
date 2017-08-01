@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/reechou/holmes"
-	"github.com/onsi/ginkgo/integration/_fixtures/watch_fixtures/A"
 )
 
 type WeixinContactBindCard struct {
