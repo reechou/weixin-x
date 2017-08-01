@@ -112,7 +112,7 @@ func (self *DataStatisticsWorker) runSave() {
 	}
 	self.Unlock()
 	for k, v := range dataMap {
-		sd := models.StatisticalData{
+		sd := &models.StatisticalData{
 			TypeId:     k,
 			Data:       v,
 			TimeSeries: self.nowHour,
