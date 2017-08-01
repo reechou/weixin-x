@@ -26,6 +26,14 @@ func CreateStatisticalData(info *StatisticalData) error {
 	return nil
 }
 
+func UpdateStatisticalData(info *StatisticalData) (int64, error) {
+	affected, err := x.Where("type_id = ?", info.TypeId).
+		And("time_series = ?", info.TimeSeries).
+		Cols("data").
+		Update(info)
+	return affected, err
+}
+
 func GetStatisticalData(typeId, startTime, endTime int64) ([]StatisticalData, error) {
 	var list []StatisticalData
 	err := x.Where("type_id = ?", typeId).

@@ -450,14 +450,16 @@ func (self *Logic) AddContact(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer func() {
-		beginOfDay := now.BeginningOfDay().Unix()
-		if weixin.LastAddContactTime < beginOfDay {
-			weixin.TodayAddContactNum = 0
-		}
-		weixin.TodayAddContactNum = weixin.TodayAddContactNum + 1
-		err = models.UpdateWeixinAddContact(weixin)
-		if err != nil {
-			holmes.Error("update weixin add contact error: %v", err)
+		if rsp.Code == proto.RESPONSE_OK {
+			beginOfDay := now.BeginningOfDay().Unix()
+			if weixin.LastAddContactTime < beginOfDay {
+				weixin.TodayAddContactNum = 0
+			}
+			weixin.TodayAddContactNum = weixin.TodayAddContactNum + 1
+			err = models.UpdateWeixinAddContact(weixin)
+			if err != nil {
+				holmes.Error("update weixin add contact error: %v", err)
+			}
 		}
 	}()
 
@@ -501,4 +503,6 @@ func (self *Logic) AddContact(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		holmes.Error("create wx tag friend error: %v", err)
 	}
+	// collect
+	self.dsw.Collect(&StatisticsDataInfo{TypeId: int64(models.S_DATA_ADD_CONTACT), Data: 1})
 }

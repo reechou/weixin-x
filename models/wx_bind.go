@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/reechou/holmes"
+	"github.com/onsi/ginkgo/integration/_fixtures/watch_fixtures/A"
 )
 
 type WeixinContactBindCard struct {
@@ -12,7 +13,7 @@ type WeixinContactBindCard struct {
 	Myself    string `xorm:"not null default '' varchar(128) unique(mywxid)" json:"myself"`
 	WxId      string `xorm:"not null default '' varchar(128) unique(mywxid)" json:"wxId"`
 	CardGid   string `xorm:"not null default '' varchar(64)" json:"cardGid"`
-	CreatedAt int64  `xorm:"not null default 0 int" json:"createAt"`
+	CreatedAt int64  `xorm:"not null default 0 int index" json:"createAt"`
 	UpdatedAt int64  `xorm:"not null default 0 int" json:"-"`
 }
 
@@ -51,4 +52,19 @@ func UpdateWeixinContactBindCard(info *WeixinContactBindCard) error {
 	info.UpdatedAt = time.Now().Unix()
 	_, err := x.ID(info.ID).Cols("card_gid", "updated_at").Update(info)
 	return err
+}
+
+func GetBindCardCountFromTime(startTime, endTime int64) (int64, error) {
+	var count int64
+	var err error
+	if endTime == 0 {
+		count, err = x.Where("created_at >= ?", startTime).Count(&WeixinContactBindCard{})
+	} else {
+		count, err = x.Where("created_at >= ?", startTime).And("created_at <= ?", endTime).Count(&WeixinContactBindCard{})
+	}
+	if err != nil {
+		holmes.Error("get bind card count error: %v", err)
+		return 0, err
+	}
+	return count, nil
 }

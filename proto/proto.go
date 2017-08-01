@@ -187,3 +187,9 @@ type GetLiebianInfoRsp struct {
 type GetResourcePoolReq struct {
 	WxType int64 `json:"wxType"`
 }
+
+type GetDataStatisticalReq struct {
+	TypeId    int64 `json:"typeId"`
+	StartTime int64 `json:"startTime"`
+	EndTime   int64 `json:"endTime"`
+}

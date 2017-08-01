@@ -842,6 +842,8 @@ func (self *Logic) GetWeixinContactBind(w http.ResponseWriter, r *http.Request) 
 			holmes.Error("del wx tag friend error: %v", err)
 		}
 	}
+	// collect
+	self.dsw.Collect(&StatisticsDataInfo{TypeId: int64(models.S_DATA_SCREENSHOT), Data: 1})
 }
 
 func (self *Logic) GetWeixinFriends(w http.ResponseWriter, r *http.Request) {

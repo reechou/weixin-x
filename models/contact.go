@@ -78,3 +78,18 @@ func GetWeixinContactListFromTime(weixinId, startTime, endTime int64) ([]WeixinC
 	}
 	return list, nil
 }
+
+func GetWeixinContactCountFromTime(startTime, endTime int64) (int64, error) {
+	var count int64
+	var err error
+	if endTime == 0 {
+		count, err = x.Where("add_contact_time >= ?", startTime).Count(&WeixinContact{})
+	} else {
+		count, err = x.Where("add_contact_time >= ?", startTime).And("add_contact_time <= ?", endTime).Count(&WeixinContact{})
+	}
+	if err != nil {
+		holmes.Error("get weixin contact count error: %v", err)
+		return 0, err
+	}
+	return count, nil
+}

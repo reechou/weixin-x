@@ -16,6 +16,7 @@ type Logic struct {
 	cw  *ContactWorker
 	ttw *TimerTaskWorker
 	wmm *WeixinMonitorManager
+	dsw *DataStatisticsWorker
 
 	cfg *config.Config
 }
@@ -91,6 +92,9 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/delete_lianbian_pool", self.DeleteLiebianPool)
 	http.HandleFunc("/weixin/get_lianbian_pool", self.GetLiebianPool)
 	http.HandleFunc("/weixin/get_user_lianbian_pool", self.GetUserLiebianInfo)
+	
+	// monitor
+	http.HandleFunc("/monitor/get_data", self.GetDataStatistical)
 
 	http.HandleFunc("/weixin/get_all_weixin", self.GetAllWeixin)
 	http.HandleFunc("/weixin/get_all_verify", self.GetAllVerifySetting)
@@ -109,6 +113,7 @@ func (self *Logic) Run() {
 	}
 	// start monitor
 	self.wmm = NewWeixinMonitorManager()
+	self.dsw = NewDataStatisticsWorker(self.cfg)
 
 	holmes.Info("server starting on[%s]..", self.cfg.Host)
 	holmes.Infoln(http.ListenAndServe(self.cfg.Host, nil))

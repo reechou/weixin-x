@@ -10,6 +10,7 @@ import (
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/models"
 	"github.com/reechou/weixin-x/proto"
+	"github.com/jinzhu/now"
 )
 
 func (self *Logic) CreateLiebianType(w http.ResponseWriter, r *http.Request) {
@@ -300,6 +301,12 @@ func (self *Logic) GetLiebianPool(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	todayZero := now.BeginningOfDay().Unix()
+	for i := 0; i < len(list); i++ {
+		if list[i].Weixin.LastAddContactTime < todayZero {
+			list[i].Weixin.TodayAddContactNum = 0
+		}
+	}
 	rsp.Data = list
 }
 
@@ -367,6 +374,31 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 		holmes.Error("create qrcode bind error: %v", err)
 	}
 	rsp.Data = result
+}
+
+func (self *Logic) GetDataStatistical(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.GetDataStatisticalReq{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetDataStatistical json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	list, err := models.GetStatisticalData(req.TypeId, req.StartTime, req.EndTime)
+	if err != nil {
+		holmes.Error("get statistical data error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
 }
 
 func init() {

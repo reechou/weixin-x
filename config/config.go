@@ -37,7 +37,8 @@ type Config struct {
 	Version   string
 	IfShowSql bool
 
-	TimerTaskCron string
+	TimerTaskCron   string
+	DataCollectCron string
 
 	DefaultRobotHost string
 
