@@ -117,15 +117,22 @@ func (self *DataStatisticsWorker) runSave() {
 			Data:       v,
 			TimeSeries: self.nowHour,
 		}
-		affected, err := models.UpdateStatisticalData(sd)
+		has, err := models.GetStatisticalData(sd)
 		if err != nil {
-			holmes.Error("update statistical data error: %v", err)
+			holmes.Error("get statistical data error: %v", err)
 			continue
 		}
-		if affected == 0 {
+		if has {
+			_, err := models.UpdateStatisticalData(sd)
+			if err != nil {
+				holmes.Error("update statistical data error: %v", err)
+				continue
+			}
+		} else {
 			err = models.CreateStatisticalData(sd)
 			if err != nil {
 				holmes.Error("create statistical data error: %v", err)
+				continue
 			}
 		}
 		if nowHour != self.nowHour {

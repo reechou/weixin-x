@@ -11,9 +11,9 @@ const (
 
 type StatisticalData struct {
 	ID         int64 `xorm:"pk autoincr" json:"id"`
-	TypeId     int64 `xorm:"not null default 0 int index" json:"typeId"`
+	TypeId     int64 `xorm:"not null default 0 int unique(ts)" json:"typeId"`
 	Data       int64 `xorm:"not null default 0 int" json:"data"`
-	TimeSeries int64 `xorm:"not null default 0 int index" json:"timeSeries"`
+	TimeSeries int64 `xorm:"not null default 0 int unique(ts)" json:"timeSeries"`
 }
 
 func CreateStatisticalData(info *StatisticalData) error {
@@ -26,6 +26,17 @@ func CreateStatisticalData(info *StatisticalData) error {
 	return nil
 }
 
+func GetStatisticalData(info *StatisticalData) (bool, error) {
+	has, err := x.Where("type_id = ?", info.TypeId).And("time_series = ?", info.TimeSeries).Get(info)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		return false, nil
+	}
+	return true, nil
+}
+
 func UpdateStatisticalData(info *StatisticalData) (int64, error) {
 	affected, err := x.Where("type_id = ?", info.TypeId).
 		And("time_series = ?", info.TimeSeries).
@@ -34,7 +45,7 @@ func UpdateStatisticalData(info *StatisticalData) (int64, error) {
 	return affected, err
 }
 
-func GetStatisticalData(typeId, startTime, endTime int64) ([]StatisticalData, error) {
+func GetStatisticalDataList(typeId, startTime, endTime int64) ([]StatisticalData, error) {
 	var list []StatisticalData
 	err := x.Where("type_id = ?", typeId).
 		And("time_series >= ?", startTime).

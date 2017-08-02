@@ -392,7 +392,7 @@ func (self *Logic) GetDataStatistical(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	list, err := models.GetStatisticalData(req.TypeId, req.StartTime, req.EndTime)
+	list, err := models.GetStatisticalDataList(req.TypeId, req.StartTime, req.EndTime)
 	if err != nil {
 		holmes.Error("get statistical data error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
