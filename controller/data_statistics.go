@@ -122,6 +122,7 @@ func (self *DataStatisticsWorker) runSave() {
 			holmes.Error("get statistical data error: %v", err)
 			continue
 		}
+		holmes.Debug("run save: %v %v", has, sd)
 		if has {
 			_, err := models.UpdateStatisticalData(sd)
 			if err != nil {
