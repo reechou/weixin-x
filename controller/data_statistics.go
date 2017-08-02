@@ -117,7 +117,7 @@ func (self *DataStatisticsWorker) runSave() {
 			Data:       v,
 			TimeSeries: self.nowHour,
 		}
-		has, err := models.GetStatisticalData(sd)
+		has, err := models.GetStatisticalData(&models.StatisticalData{TypeId: k, TimeSeries: self.nowHour})
 		if err != nil {
 			holmes.Error("get statistical data error: %v", err)
 			continue
