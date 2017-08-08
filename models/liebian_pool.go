@@ -8,11 +8,12 @@ import (
 )
 
 type LiebianType struct {
-	ID          int64  `xorm:"pk autoincr" json:"id"`
-	LiebianType int64  `xorm:"not null default 0 int unique" json:"liebianType"`
-	Desc        string `xorm:"not null default '' varchar(128)" json:"desc"`
-	CreatedAt   int64  `xorm:"not null default 0 int" json:"createAt"`
-	UpdatedAt   int64  `xorm:"not null default 0 int" json:"-"`
+	ID           int64  `xorm:"pk autoincr" json:"id"`
+	LiebianType  int64  `xorm:"not null default 0 int unique" json:"liebianType"`
+	Desc         string `xorm:"not null default '' varchar(128)" json:"desc"`
+	LiebianLimit int64  `xorm:"not null default 0 int" json:"liebianLimit"`
+	CreatedAt    int64  `xorm:"not null default 0 int" json:"createAt"`
+	UpdatedAt    int64  `xorm:"not null default 0 int" json:"-"`
 }
 
 func CreateLiebianType(info *LiebianType) error {
@@ -57,10 +58,16 @@ func DelLiebianType(info *LiebianType) error {
 	return nil
 }
 
+func UpdateLiebianTypeLiebianLimit(info *LiebianType) error {
+	info.UpdatedAt = time.Now().Unix()
+	_, err := x.ID(info.ID).Cols("liebian_limit", "updated_at").Update(info)
+	return err
+}
+
 type LiebianPool struct {
 	ID          int64 `xorm:"pk autoincr" json:"id"`
-	LiebianType int64 `xorm:"not null default 0 int" json:"liebianType"`
-	WeixinId    int64 `xorm:"not null default 0 int" json:"weixinId"`
+	LiebianType int64 `xorm:"not null default 0 int index" json:"liebianType"`
+	WeixinId    int64 `xorm:"not null default 0 int index" json:"weixinId"`
 	CreatedAt   int64 `xorm:"not null default 0 int" json:"createAt"`
 	UpdatedAt   int64 `xorm:"not null default 0 int" json:"-"`
 }
@@ -92,4 +99,34 @@ func DelLiebianPoolList(ids []int64) error {
 	}
 
 	return nil
+}
+
+type LiebianErrorMsg struct {
+	ID           int64  `xorm:"pk autoincr" json:"id"`
+	LiebianType  int64  `xorm:"not null default 0 int index" json:"liebianType"`
+	Msg          string `xorm:"not null default '' varchar(512)" json:"msg"`
+	CreatedAt    int64  `xorm:"not null default 0 int" json:"createAt"`
+}
+
+func CreateLiebianErrorMsg(info *LiebianErrorMsg) error {
+	now := time.Now().Unix()
+	info.CreatedAt = now
+	
+	_, err := x.Insert(info)
+	if err != nil {
+		holmes.Error("create liebian error msg error: %v", err)
+		return err
+	}
+	
+	return nil
+}
+
+func GetLiebianErrorMsgList(liebianType int64) ([]LiebianErrorMsg, error) {
+	var list []LiebianErrorMsg
+	err := x.Where("liebian_type = ?", liebianType).Find(&list)
+	if err != nil {
+		holmes.Error("get liebian type error msg list error: %v", err)
+		return nil, err
+	}
+	return list, nil
 }

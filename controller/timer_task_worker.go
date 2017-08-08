@@ -98,7 +98,7 @@ func (self *TimerTaskWorker) runTimerTask() {
 	holmes.Debug("[timer task] run start.")
 	start := time.Now()
 	defer func() {
-		holmes.Debug("[timer task] run end, user time: %v.", time.Now().Sub(start))
+		holmes.Debug("[timer task] run end, use time: %v.", time.Now().Sub(start))
 	}()
 
 	minute := start.Minute()

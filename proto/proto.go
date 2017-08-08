@@ -193,3 +193,7 @@ type GetDataStatisticalReq struct {
 	StartTime int64 `json:"startTime"`
 	EndTime   int64 `json:"endTime"`
 }
+
+type GetLiebianErrorMsgReq struct {
+	LiebianType int64 `json:"liebianType"`
+}

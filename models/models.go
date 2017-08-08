@@ -48,7 +48,8 @@ func InitDB(cfg *config.Config) {
 		new(WeixinGroupMember),
 		new(LiebianPool),
 		new(QrcodeBind),
-		new(StatisticalData)); err != nil {
+		new(StatisticalData),
+		new(LiebianErrorMsg)); err != nil {
 		holmes.Fatal("Fail to sync database: %v", err)
 	}
 }

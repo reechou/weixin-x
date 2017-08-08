@@ -82,6 +82,31 @@ func (self *Logic) DeleteLiebianType(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (self *Logic) UpdateLiebianTypeLimit(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &models.LiebianType{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("UpdateLiebianTypeLimit json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err := models.UpdateLiebianTypeLiebianLimit(req)
+	if err != nil {
+		holmes.Error("update liebian type limit error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
 func (self *Logic) CreateWeixinGroup(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
 	defer func() {
@@ -326,6 +351,10 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	start := time.Now()
+	defer func() {
+		holmes.Debug("get user liebian info[%v] end, use time: %v.", req, time.Now().Sub(start))
+	}()
 
 	qrcodeBind := &models.QrcodeBind{
 		AppId:       req.AppId,
@@ -395,6 +424,31 @@ func (self *Logic) GetDataStatistical(w http.ResponseWriter, r *http.Request) {
 	list, err := models.GetStatisticalDataList(req.TypeId, req.StartTime, req.EndTime)
 	if err != nil {
 		holmes.Error("get statistical data error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
+}
+
+func (self *Logic) GetLiebianErrorMsgList(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.GetLiebianErrorMsgReq{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetLiebianErrorMsgList json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	list, err := models.GetLiebianErrorMsgList(req.LiebianType)
+	if err != nil {
+		holmes.Error("get liebian error msg list error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}

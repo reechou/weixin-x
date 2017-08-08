@@ -81,6 +81,7 @@ func (self *Logic) init() {
 	// liebian
 	http.HandleFunc("/weixin/create_liebian_type", self.CreateLiebianType)
 	http.HandleFunc("/weixin/delete_liebian_type", self.DeleteLiebianType)
+	http.HandleFunc("/weixin/update_liebian_type_limit", self.UpdateLiebianTypeLimit)
 	http.HandleFunc("/weixin/get_liebian_type_list", self.GetLiebianTypeList)
 	http.HandleFunc("/weixin/create_weixin_group", self.CreateWeixinGroup)
 	http.HandleFunc("/weixin/delete_weixin_group", self.DeleteWeixinGroup)
@@ -92,6 +93,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/delete_lianbian_pool", self.DeleteLiebianPool)
 	http.HandleFunc("/weixin/get_lianbian_pool", self.GetLiebianPool)
 	http.HandleFunc("/weixin/get_user_lianbian_pool", self.GetUserLiebianInfo)
+	http.HandleFunc("/weixin/get_liebian_error_msg", self.GetLiebianErrorMsgList)
 	
 	// monitor
 	http.HandleFunc("/monitor/get_data", self.GetDataStatistical)

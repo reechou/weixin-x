@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	CHECK_HEALTH_TIME = 180
+	CHECK_HEALTH_TIME = 300
 )
 
 const (
-	MONITOR_ABNORMAL_WARN_MSG = "[微信监控] 裂变Type[%d] 机器 %v 出现异常，3分钟内未上报心跳，已自动下线。"
+	MONITOR_ABNORMAL_WARN_MSG = "[微信监控] 裂变Type[%d] 机器 %v 出现异常，5分钟内未上报心跳，已自动下线。"
 )
 
 type WeixinMonitor struct {
@@ -79,5 +79,10 @@ func (self *WeixinMonitor) check() {
 	if len(abnormalIds) > 0 {
 		abnormalMsg := fmt.Sprintf(MONITOR_ABNORMAL_WARN_MSG, self.LiebianType, abnormalIds)
 		holmes.Error("abnormal msg: %s", abnormalMsg)
+		errorMsg := models.LiebianErrorMsg{
+			LiebianType: self.LiebianType,
+			Msg:         abnormalMsg,
+		}
+		models.CreateLiebianErrorMsg(errorMsg)
 	}
 }
