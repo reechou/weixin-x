@@ -353,7 +353,7 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 	}
 	start := time.Now()
 	defer func() {
-		holmes.Debug("get user liebian info[%v] end, use time: %v.", req, time.Now().Sub(start))
+		holmes.Debug("get user liebian req[%v] rsp[%v] end, use time: %v.", req, rsp.Data, time.Now().Sub(start))
 	}()
 
 	qrcodeBind := &models.QrcodeBind{
