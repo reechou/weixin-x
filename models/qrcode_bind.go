@@ -12,6 +12,7 @@ type QrcodeBind struct {
 	OpenId      string `xorm:"not null default '' varchar(128) unique(user_qrcode_bind)" json:"appId"`
 	LiebianType int64  `xorm:"not null default 0 int unique(user_qrcode_bind)" json:"liebianType"`
 	BindQrcode  string `xorm:"not null default '' varchar(256)" json:"bindQrcode"`
+	WeixinId    int64  `xorm:"not null default 0 int" json:"weixinId"`
 	CreatedAt   int64  `xorm:"not null default 0 int" json:"createAt"`
 }
 
@@ -41,4 +42,9 @@ func GetQrcodeBind(info *QrcodeBind) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+func UpdateQrcodeBind(info *QrcodeBind) error {
+	_, err := x.ID(info.ID).Cols("bind_qrcode", "weixin_id").Update(info)
+	return err
 }

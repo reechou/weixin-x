@@ -362,14 +362,14 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 		OpenId:      req.OpenId,
 		LiebianType: req.LiebianType,
 	}
-	has, err := models.GetQrcodeBind(qrcodeBind)
+	hasBind, err := models.GetQrcodeBind(qrcodeBind)
 	if err != nil {
 		holmes.Error("get qrcode bind error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
 	result := new(proto.GetLiebianInfoRsp)
-	if has {
+	if hasBind {
 		if qrcodeBind.BindQrcode != "" {
 			result.Qrcode = qrcodeBind.BindQrcode
 			rsp.Data = result
@@ -399,10 +399,12 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	qrcodeBind.BindQrcode = result.Qrcode
+	qrcodeBind.WeixinId = liebianList[listOffset].Weixin.ID
 	err = models.CreateQrcodeBind(qrcodeBind)
 	if err != nil {
 		holmes.Error("create qrcode bind error: %v", err)
 	}
+	
 	rsp.Data = result
 }
 

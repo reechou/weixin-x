@@ -12,6 +12,12 @@ const (
 	WX_TYPE_GZH
 )
 
+const (
+	WEIXIN_STATUS_OK = iota
+	WEIXIN_STATUS_FULL
+	WEIXIN_STATUS_FORBIDDEN
+)
+
 type Weixin struct {
 	ID                 int64  `xorm:"pk autoincr" json:"id"`
 	WxId               string `xorm:"not null default '' varchar(128) index" json:"wxId"`
@@ -82,6 +88,18 @@ func GetWeixinFromWxid(info *Weixin) (bool, error) {
 	}
 	if !has {
 		holmes.Debug("cannot find weixin from wxid[%s]", info.WxId)
+		return false, nil
+	}
+	return true, nil
+}
+
+func GetWeixinFromId(info *Weixin) (bool, error) {
+	has, err := x.Id(info.ID).Get(info)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		holmes.Debug("cannot find weixin from id[%s]", info.ID)
 		return false, nil
 	}
 	return true, nil

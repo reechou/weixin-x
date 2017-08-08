@@ -105,7 +105,7 @@ type LiebianErrorMsg struct {
 	ID           int64  `xorm:"pk autoincr" json:"id"`
 	LiebianType  int64  `xorm:"not null default 0 int index" json:"liebianType"`
 	Msg          string `xorm:"not null default '' varchar(512)" json:"msg"`
-	CreatedAt    int64  `xorm:"not null default 0 int" json:"createAt"`
+	CreatedAt    int64  `xorm:"not null default 0 int index" json:"createAt"`
 }
 
 func CreateLiebianErrorMsg(info *LiebianErrorMsg) error {
@@ -123,7 +123,7 @@ func CreateLiebianErrorMsg(info *LiebianErrorMsg) error {
 
 func GetLiebianErrorMsgList(liebianType int64) ([]LiebianErrorMsg, error) {
 	var list []LiebianErrorMsg
-	err := x.Where("liebian_type = ?", liebianType).Find(&list)
+	err := x.Where("liebian_type = ?", liebianType).Desc("created_at").Find(&list)
 	if err != nil {
 		holmes.Error("get liebian type error msg list error: %v", err)
 		return nil, err
