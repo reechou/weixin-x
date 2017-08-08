@@ -79,7 +79,7 @@ func (self *WeixinMonitor) check() {
 	if len(abnormalIds) > 0 {
 		abnormalMsg := fmt.Sprintf(MONITOR_ABNORMAL_WARN_MSG, self.LiebianType, abnormalIds)
 		holmes.Error("abnormal msg: %s", abnormalMsg)
-		errorMsg := models.LiebianErrorMsg{
+		errorMsg := &models.LiebianErrorMsg{
 			LiebianType: self.LiebianType,
 			Msg:         abnormalMsg,
 		}
