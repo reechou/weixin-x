@@ -351,9 +351,10 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	var listOffset int
 	start := time.Now()
 	defer func() {
-		holmes.Debug("get user liebian req[%v] rsp[%v] end, use time: %v.", req, rsp.Data, time.Now().Sub(start))
+		holmes.Debug("get user liebian req[%v] rsp[offset-%d][%v] end, use time: %v.", req, listOffset, rsp.Data, time.Now().Sub(start))
 	}()
 
 	qrcodeBind := &models.QrcodeBind{
@@ -388,10 +389,10 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 		rsp.Msg = fmt.Sprintf("get qrcode list from type is nil")
 		return
 	}
-	offset := rand.Intn(len(liebianList))
-	result.Qrcode = liebianList[offset].Weixin.QrcodeUrl
+	listOffset = rand.Intn(len(liebianList))
+	result.Qrcode = liebianList[listOffset].Weixin.QrcodeUrl
 	if result.Qrcode == "" {
-		holmes.Error("get liebian pool of weixin[%v] qrcodeurl is nil", liebianList[offset])
+		holmes.Error("get liebian pool of weixin[%v] qrcodeurl is nil", liebianList[listOffset])
 		rsp.Code = proto.RESPONSE_ERR
 		rsp.Msg = fmt.Sprintf("get qrcode of url offset is nil")
 		return
