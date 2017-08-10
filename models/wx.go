@@ -38,8 +38,10 @@ type Weixin struct {
 }
 
 func CreateWeixin(info *Weixin) error {
-	if info.Wechat == "" {
-		return fmt.Errorf("wechat cannot be nil.")
+	if info.WxType == WX_TYPE_WECHAT {
+		if info.Wechat == "" {
+			return fmt.Errorf("wechat cannot be nil.")
+		}
 	}
 
 	now := time.Now().Unix()
