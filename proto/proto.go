@@ -21,12 +21,14 @@ type MsgInfo struct {
 }
 
 type VerifySetting struct {
+	BindId         int64     `json:"bindId"`
 	IfAutoVerified bool      `json:"ifAutoVerified"`
 	Reply          []MsgInfo `json:"reply"`
 	Interval       int64     `json:"interval"`
 }
 
 type KeywordSetting struct {
+	BindId   int64     `json:"bindId"`
 	ChatType string    `json:"chatType"`
 	MsgType  int64     `json:"msgType"`
 	Keyword  string    `json:"keyword"`

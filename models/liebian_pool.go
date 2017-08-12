@@ -12,6 +12,7 @@ type LiebianType struct {
 	LiebianType  int64  `xorm:"not null default 0 int unique" json:"liebianType"`
 	Desc         string `xorm:"not null default '' varchar(128)" json:"desc"`
 	LiebianLimit int64  `xorm:"not null default 0 int" json:"liebianLimit"`
+	FullLimit    int64  `xorm:"not null default 0 int" json:"fullLimit"`
 	CreatedAt    int64  `xorm:"not null default 0 int" json:"createAt"`
 	UpdatedAt    int64  `xorm:"not null default 0 int" json:"-"`
 }
@@ -58,9 +59,9 @@ func DelLiebianType(info *LiebianType) error {
 	return nil
 }
 
-func UpdateLiebianTypeLiebianLimit(info *LiebianType) error {
+func UpdateLiebianTypeLimit(info *LiebianType) error {
 	info.UpdatedAt = time.Now().Unix()
-	_, err := x.ID(info.ID).Cols("liebian_limit", "updated_at").Update(info)
+	_, err := x.ID(info.ID).Cols("liebian_limit", "full_limit", "updated_at").Update(info)
 	return err
 }
 
@@ -123,7 +124,7 @@ func CreateLiebianErrorMsg(info *LiebianErrorMsg) error {
 
 func GetLiebianErrorMsgList(liebianType int64) ([]LiebianErrorMsg, error) {
 	var list []LiebianErrorMsg
-	err := x.Where("liebian_type = ?", liebianType).Desc("created_at").Find(&list)
+	err := x.Where("liebian_type = ?", liebianType).Desc("created_at").Limit(30).Find(&list)
 	if err != nil {
 		holmes.Error("get liebian type error msg list error: %v", err)
 		return nil, err

@@ -597,22 +597,23 @@ func (self *Logic) GetWeixinSettingFromId(w http.ResponseWriter, r *http.Request
 		WeixinId: req.Id,
 	}
 
-	verifySetting, err := models.GetWeixinVerifySettingDetail(req.Id)
+	verifySetting, err := models.GetWeixinVerifySettingFromWeixin(req.Id)
 	if err != nil {
 		holmes.Error("get weixin verify setting error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
 	if verifySetting != nil {
-		setting.Verify.IfAutoVerified = verifySetting.IfAutoVerified
-		setting.Verify.Interval = verifySetting.Interval
-		err = json.Unmarshal([]byte(verifySetting.Reply), &setting.Verify.Reply)
+		setting.Verify.BindId = verifySetting.WeixinVerify.ID
+		setting.Verify.IfAutoVerified = verifySetting.WeixinVerifySetting.IfAutoVerified
+		setting.Verify.Interval = verifySetting.WeixinVerifySetting.Interval
+		err = json.Unmarshal([]byte(verifySetting.WeixinVerifySetting.Reply), &setting.Verify.Reply)
 		if err != nil {
 			holmes.Error("json unmarshal verify setting reply error: %v", err)
 		}
 	}
 
-	keywordSettingList, err := models.GetWeixinKeywordSettingList(req.Id)
+	keywordSettingList, err := models.GetWeixinKeywordSettingListFromWeixin(req.Id)
 	if err != nil {
 		holmes.Error("get weixin keyword setting list error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
@@ -620,12 +621,13 @@ func (self *Logic) GetWeixinSettingFromId(w http.ResponseWriter, r *http.Request
 	}
 	for _, v := range keywordSettingList {
 		kSetting := proto.KeywordSetting{
-			ChatType: v.ChatType,
-			MsgType:  v.MsgType,
-			Keyword:  v.Keyword,
-			Interval: v.Interval,
+			BindId:   v.WeixinKeyword.ID,
+			ChatType: v.WeixinKeywordSetting.ChatType,
+			MsgType:  v.WeixinKeywordSetting.MsgType,
+			Keyword:  v.WeixinKeywordSetting.Keyword,
+			Interval: v.WeixinKeywordSetting.Interval,
 		}
-		err = json.Unmarshal([]byte(v.Reply), &kSetting.Reply)
+		err = json.Unmarshal([]byte(v.WeixinKeywordSetting.Reply), &kSetting.Reply)
 		if err != nil {
 			holmes.Error("json unmarshal keyword setting reply error: %v", err)
 		} else {

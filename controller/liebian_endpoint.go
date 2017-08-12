@@ -99,7 +99,7 @@ func (self *Logic) UpdateLiebianTypeLimit(w http.ResponseWriter, r *http.Request
 		return
 	}
 	
-	err := models.UpdateLiebianTypeLiebianLimit(req)
+	err := models.UpdateLiebianTypeLimit(req)
 	if err != nil {
 		holmes.Error("update liebian type limit error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR

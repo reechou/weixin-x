@@ -13,7 +13,8 @@ const (
 )
 
 const (
-	MONITOR_ABNORMAL_WARN_MSG = "[微信监控] 裂变Type[%d] 机器 %v 出现异常，5分钟内未上报心跳，已自动下线。"
+	MONITOR_WEIXIN_ABNORMAL_WARN_MSG   = "[微信监控] 裂变Type[%d] 微信池 %v 出现异常，5分钟内未上报心跳，已自动下线。"
+	MONITOR_RESOURCE_ABNORMAL_WARN_MSG = "[微信监控] 裂变Type[%d] 资源池 %v 异常，已自动下线。"
 )
 
 type WeixinMonitor struct {
@@ -62,23 +63,45 @@ func (self *WeixinMonitor) check() {
 	healthNode := 0
 	now := time.Now().Unix()
 	var abnormalIds []int64
+	var resourceAbnormalIds []int64
 	for _, v := range weixinList {
-		if now-v.Weixin.LastHeartbeat < CHECK_HEALTH_TIME {
-			healthNode++
-			continue
+		if v.Weixin.WxType == models.WX_TYPE_WECHAT {
+			if now-v.Weixin.LastHeartbeat < CHECK_HEALTH_TIME {
+				healthNode++
+				continue
+			}
+		} else {
+			if v.Weixin.Status == models.WEIXIN_STATUS_OK {
+				healthNode++
+				continue
+			}
 		}
 		holmes.Error("weixin[%v] check health error.", v)
-		// down this weixin
+		// down this weixin or resource
 		err = models.DelLiebianPoolList([]int64{v.LiebianPool.ID})
 		if err != nil {
 			holmes.Error("del liebian pool[%d] error: %v", v.LiebianPool.ID, err)
 		}
-		abnormalIds = append(abnormalIds, v.Weixin.ID)
+		if v.Weixin.WxType == models.WX_TYPE_WECHAT {
+			abnormalIds = append(abnormalIds, v.Weixin.ID)
+		} else {
+			resourceAbnormalIds = append(resourceAbnormalIds, v.Weixin.ID)
+		}
 	}
-	// send warn msg
+	// TODO: send warn msg
+	// save warn msg
 	if len(abnormalIds) > 0 {
-		abnormalMsg := fmt.Sprintf(MONITOR_ABNORMAL_WARN_MSG, self.LiebianType, abnormalIds)
-		holmes.Error("abnormal msg: %s", abnormalMsg)
+		abnormalMsg := fmt.Sprintf(MONITOR_WEIXIN_ABNORMAL_WARN_MSG, self.LiebianType, abnormalIds)
+		holmes.Error("weixin abnormal msg: %s", abnormalMsg)
+		errorMsg := &models.LiebianErrorMsg{
+			LiebianType: self.LiebianType,
+			Msg:         abnormalMsg,
+		}
+		models.CreateLiebianErrorMsg(errorMsg)
+	}
+	if len(resourceAbnormalIds) > 0 {
+		abnormalMsg := fmt.Sprintf(MONITOR_RESOURCE_ABNORMAL_WARN_MSG, self.LiebianType, resourceAbnormalIds)
+		holmes.Error("resource abnormal msg: %s", abnormalMsg)
 		errorMsg := &models.LiebianErrorMsg{
 			LiebianType: self.LiebianType,
 			Msg:         abnormalMsg,

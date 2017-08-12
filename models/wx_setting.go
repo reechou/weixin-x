@@ -20,7 +20,7 @@ type WeixinVerifySetting struct {
 type WeixinVerify struct {
 	ID                    int64 `xorm:"pk autoincr" json:"id"`
 	WeixinId              int64 `xorm:"not null default 0 int index" json:"weixinId"`
-	WeixinVerifySettingId int64 `xorm:"not null default 0 int" json:"weixinVerifySettingId"`
+	WeixinVerifySettingId int64 `xorm:"not null default 0 int index" json:"weixinVerifySettingId"`
 	CreatedAt             int64 `xorm:"not null default 0 int" json:"createAt"`
 	UpdatedAt             int64 `xorm:"not null default 0 int" json:"-"`
 }
@@ -179,7 +179,7 @@ type WeixinKeywordSetting struct {
 type WeixinKeyword struct {
 	ID                     int64 `xorm:"pk autoincr" json:"id"`
 	WeixinId               int64 `xorm:"not null default 0 int index" json:"weixinId"`
-	WeixinKeywordSettingId int64 `xorm:"not null default 0 int" json:"weixinKeywordSettingId"`
+	WeixinKeywordSettingId int64 `xorm:"not null default 0 int index" json:"weixinKeywordSettingId"`
 	CreatedAt              int64 `xorm:"not null default 0 int" json:"createAt"`
 	UpdatedAt              int64 `xorm:"not null default 0 int" json:"-"`
 }
