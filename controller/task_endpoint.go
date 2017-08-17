@@ -504,5 +504,5 @@ func (self *Logic) AddContact(w http.ResponseWriter, r *http.Request) {
 		holmes.Error("create wx tag friend error: %v", err)
 	}
 	// collect
-	self.dsw.Collect(&StatisticsDataInfo{TypeId: int64(models.S_DATA_ADD_CONTACT), Data: 1})
+	self.dsw.Collect(&StatisticsDataInfo{TypeId: int64(models.S_DATA_ADD_CONTACT), Data: 1, WeixinId: weixin.ID})
 }

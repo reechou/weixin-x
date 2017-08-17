@@ -6,11 +6,12 @@ import (
 	"math/rand"
 	"net/http"
 	"time"
+	"sort"
 
+	"github.com/jinzhu/now"
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/models"
 	"github.com/reechou/weixin-x/proto"
-	"github.com/jinzhu/now"
 )
 
 func (self *Logic) CreateLiebianType(w http.ResponseWriter, r *http.Request) {
@@ -87,18 +88,18 @@ func (self *Logic) UpdateLiebianTypeLimit(w http.ResponseWriter, r *http.Request
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &models.LiebianType{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("UpdateLiebianTypeLimit json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	
+
 	err := models.UpdateLiebianTypeLimit(req)
 	if err != nil {
 		holmes.Error("update liebian type limit error: %v", err)
@@ -356,6 +357,9 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		holmes.Debug("get user liebian req[%v] rsp[offset-%d][%v] end, use time: %v.", req, listOffset, rsp.Data, time.Now().Sub(start))
 	}()
+	
+	// collect pv
+	self.dsw.Collect(&StatisticsDataInfo{TypeId: int64(models.S_DATA_LIEBIAN_PV), Data: 1, LiebianType: req.LiebianType})
 
 	qrcodeBind := &models.QrcodeBind{
 		AppId:       req.AppId,
@@ -376,6 +380,9 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	
+	// collect uv
+	self.dsw.Collect(&StatisticsDataInfo{TypeId: int64(models.S_DATA_LIEBIAN_UV), Data: 1, LiebianType: req.LiebianType})
 
 	liebianList, err := models.GetLiebianPoolWeixinList(req.LiebianType)
 	if err != nil {
@@ -404,7 +411,7 @@ func (self *Logic) GetUserLiebianInfo(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		holmes.Error("create qrcode bind error: %v", err)
 	}
-	
+
 	rsp.Data = result
 }
 
@@ -413,21 +420,65 @@ func (self *Logic) GetDataStatistical(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &proto.GetDataStatisticalReq{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("GetDataStatistical json decode error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
-	list, err := models.GetStatisticalDataList(req.TypeId, req.StartTime, req.EndTime)
+	list, err := models.GetStatisticalDataList(req.TypeId, req.LiebianType, req.StartTime, req.EndTime)
 	if err != nil {
 		holmes.Error("get statistical data error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	if req.LiebianType == 0 {
+		dataMap := make(map[int]*models.StatisticalData)
+		for _, v := range list {
+			dataV, ok := dataMap[int(v.TimeSeries)]
+			if ok {
+				dataV.Data = dataV.Data + v.Data
+			} else {
+				dataMap[int(v.TimeSeries)] = &models.StatisticalData{
+					TypeId:     v.TypeId,
+					Data:       v.Data,
+					TimeSeries: v.TimeSeries,
+				}
+			}
+		}
+		var keys []int
+		for k := range dataMap {
+			keys = append(keys, k)
+		}
+		sort.Ints(keys)
+		var result []*models.StatisticalData
+		for _, k := range keys {
+			result = append(result, dataMap[k])
+		}
+		rsp.Data = result
+
+		//var mergeList []models.StatisticalData
+		//var nowTS int64 = -1
+		//idx := -1
+		//for _, v := range list {
+		//	if nowTS != v.TimeSeries {
+		//		idx++
+		//		nowTS = v.TimeSeries
+		//		mergeList = append(mergeList, models.StatisticalData{
+		//			TypeId:     v.TypeId,
+		//			Data:       v.Data,
+		//			TimeSeries: v.TimeSeries,
+		//		})
+		//	} else {
+		//		mergeList[idx].Data = mergeList[idx].Data+v.Data
+		//	}
+		//}
+		//rsp.Data = mergeList
 		return
 	}
 	rsp.Data = list
@@ -438,11 +489,11 @@ func (self *Logic) GetLiebianErrorMsgList(w http.ResponseWriter, r *http.Request
 	defer func() {
 		WriteJSON(w, http.StatusOK, rsp)
 	}()
-	
+
 	if r.Method != "POST" {
 		return
 	}
-	
+
 	req := &proto.GetLiebianErrorMsgReq{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		holmes.Error("GetLiebianErrorMsgList json decode error: %v", err)

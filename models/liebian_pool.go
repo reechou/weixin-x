@@ -102,6 +102,18 @@ func DelLiebianPoolList(ids []int64) error {
 	return nil
 }
 
+func GetLiebianPool(info *LiebianPool) (bool, error) {
+	has, err := x.Where("weixin_id = ?", info.WeixinId).Get(info)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		holmes.Debug("cannot find liebian pool from wechat_id[%d]", info.WeixinId)
+		return false, nil
+	}
+	return true, nil
+}
+
 type LiebianErrorMsg struct {
 	ID           int64  `xorm:"pk autoincr" json:"id"`
 	LiebianType  int64  `xorm:"not null default 0 int index" json:"liebianType"`

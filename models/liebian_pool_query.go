@@ -9,6 +9,20 @@ func (LiebianWeixinPool) TableName() string {
 	return "liebian_pool"
 }
 
+func GetLiebianPoolFromWxId(wxid string) (*LiebianWeixinPool, error) {
+	info := new(LiebianWeixinPool)
+	has, err := x.Join("LEFT", "weixin", "liebian_pool.weixin_id = weixin.id").
+		Where("weixin.wx_id = ?", wxid).
+		Get(info)
+	if err != nil {
+		return nil, err
+	}
+	if !has {
+		return nil, nil
+	}
+	return info, nil
+}
+
 func GetLiebianPoolWeixinList(liebianType int64) ([]LiebianWeixinPool, error) {
 	list := make([]LiebianWeixinPool, 0)
 	var err error

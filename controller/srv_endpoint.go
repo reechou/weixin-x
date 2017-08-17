@@ -845,7 +845,7 @@ func (self *Logic) GetWeixinContactBind(w http.ResponseWriter, r *http.Request) 
 		}
 	}
 	// collect
-	self.dsw.Collect(&StatisticsDataInfo{TypeId: int64(models.S_DATA_SCREENSHOT), Data: 1})
+	self.dsw.Collect(&StatisticsDataInfo{TypeId: int64(models.S_DATA_SCREENSHOT), Data: 1, WxId: req.Myself})
 }
 
 func (self *Logic) GetWeixinFriends(w http.ResponseWriter, r *http.Request) {

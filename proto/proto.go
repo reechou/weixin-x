@@ -191,9 +191,10 @@ type GetResourcePoolReq struct {
 }
 
 type GetDataStatisticalReq struct {
-	TypeId    int64 `json:"typeId"`
-	StartTime int64 `json:"startTime"`
-	EndTime   int64 `json:"endTime"`
+	TypeId      int64 `json:"typeId"`
+	LiebianType int64 `json:"liebianType"`
+	StartTime   int64 `json:"startTime"`
+	EndTime     int64 `json:"endTime"`
 }
 
 type GetLiebianErrorMsgReq struct {
