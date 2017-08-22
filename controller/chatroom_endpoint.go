@@ -183,6 +183,10 @@ func (self *Logic) GetWeixinChatroomSetting(w http.ResponseWriter, r *http.Reque
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	
+	if chatroomSetting.WeixinChatroomSettingDetail.ID == 0 {
+		return
+	}
 
 	var setting proto.ChatroomCommonSetting
 	err = json.Unmarshal([]byte(chatroomSetting.WeixinChatroomSetting.Setting), &setting)
