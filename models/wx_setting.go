@@ -318,3 +318,111 @@ func GetWeixinKeywordSettingFromId(info *WeixinKeywordSetting) (bool, error) {
 	}
 	return true, nil
 }
+
+type WeixinChatroomSetting struct {
+	ID        int64  `xorm:"pk autoincr" json:"id"`
+	Setting   string `xorm:"text" json:"setting"`
+	CreatedAt int64  `xorm:"not null default 0 int" json:"createAt"`
+	UpdatedAt int64  `xorm:"not null default 0 int" json:"-"`
+}
+
+// chat room role: chatroom-role-master / chatroom-role-slave
+type WeixinChatroomSettingDetail struct {
+	ID                      int64  `xorm:"pk autoincr" json:"id"`
+	WeixinId                int64  `xorm:"not null default 0 int index" json:"weixinId"`
+	ChatroomRole            string `xorm:"not null default '' varchar(128)" json:"chatroomRole"`
+	WeixinChatroomSettingId int64  `xorm:"not null default 0 int index" json:"weixinChatroomSettingId"`
+	CreatedAt               int64  `xorm:"not null default 0 int" json:"createAt"`
+	UpdatedAt               int64  `xorm:"not null default 0 int" json:"-"`
+}
+
+func CreateWeixinChatroomSetting(info *WeixinChatroomSetting) error {
+	now := time.Now().Unix()
+	info.CreatedAt = now
+	info.UpdatedAt = now
+	
+	_, err := x.Insert(info)
+	if err != nil {
+		holmes.Error("create weixin chatroom setting setting error: %v", err)
+		return err
+	}
+	holmes.Info("create weixin chatroom setting[%v] success.", info)
+	
+	return nil
+}
+
+func DelWeixinChatroomSetting(info *WeixinChatroomSetting) error {
+	if info.ID == 0 {
+		return fmt.Errorf("del id cannot be nil.")
+	}
+	_, err := x.ID(info.ID).Delete(info)
+	if err != nil {
+		holmes.Error("del weixin chatroom setting error: %v", err)
+		return err
+	}
+	
+	return nil
+}
+
+func UpdateWeixinChatroomSetting(info *WeixinChatroomSetting) error {
+	now := time.Now().Unix()
+	info.UpdatedAt = now
+	_, err := x.Id(info.ID).Cols("weixin_id", "setting").Update(info)
+	return err
+}
+
+func GetAllWeixinChatroomSettingList() ([]WeixinChatroomSetting, error) {
+	var list []WeixinChatroomSetting
+	err := x.Find(&list)
+	if err != nil {
+		holmes.Error("get all weixin chatroom setting list error: %v", err)
+		return nil, err
+	}
+	return list, nil
+}
+
+// ------
+
+func CreateWeixinChatroomSettingDetail(info *WeixinChatroomSettingDetail) error {
+	if info.WeixinId == 0 {
+		return fmt.Errorf("wechat id cannot be nil.")
+	}
+	
+	now := time.Now().Unix()
+	info.CreatedAt = now
+	info.UpdatedAt = now
+	
+	_, err := x.Insert(info)
+	if err != nil {
+		holmes.Error("create robot weixin chatroom setting detail error: %v", err)
+		return err
+	}
+	holmes.Info("create robot weixin chatroom setting detail[%v] success.", info)
+	
+	return nil
+}
+
+func CreateWeixinChatroomSettingDetailList(list []WeixinChatroomSettingDetail) error {
+	if len(list) == 0 {
+		return nil
+	}
+	_, err := x.Insert(&list)
+	if err != nil {
+		holmes.Error("create weixin chatroom setting list error: %v", err)
+		return err
+	}
+	return nil
+}
+
+func DelWeixinChatroomSettingDetail(info *WeixinChatroomSettingDetail) error {
+	if info.ID == 0 {
+		return fmt.Errorf("del id cannot be nil.")
+	}
+	_, err := x.ID(info.ID).Delete(info)
+	if err != nil {
+		holmes.Error("del weixin chatroom setting detail error: %v", err)
+		return err
+	}
+	
+	return nil
+}

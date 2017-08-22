@@ -45,3 +45,39 @@ func GetWeixinKeywordSettingListFromWeixin(weixinId int64) ([]WeixinKeywordSetti
 	}
 	return list, nil
 }
+
+type WxChatroomSetting struct {
+	WeixinChatroomSettingDetail `xorm:"extends" json:"weixinChatroomSettingDetail"`
+	WeixinChatroomSetting       `xorm:"extends" json:"weixinChatroomSetting"`
+	Weixin                      `xorm:"extends" json:"weixin"`
+}
+
+func (WxChatroomSetting) TableName() string {
+	return "weixin_chatroom_setting_detail"
+}
+
+func GetWxChatroomSetting(wxid string) (*WxChatroomSetting, error) {
+	detail := new(WxChatroomSetting)
+	var err error
+	_, err = x.Join("LEFT", "weixin_chatroom_setting", "weixin_chatroom_setting_detail.weixin_chatroom_setting_id = weixin_chatroom_setting.id").
+		Join("LEFT", "weixin", "weixin_chatroom_setting_detail.weixin_id = weixin.id").
+		Where("weixin.wx_id = ?", wxid).
+		Get(detail)
+	if err != nil {
+		return nil, err
+	}
+	return detail, nil
+}
+
+func GetWxChatroomSettingFromWeixin(weixinId int64) (*WxChatroomSetting, error) {
+	detail := new(WxChatroomSetting)
+	var err error
+	_, err = x.Join("LEFT", "weixin_chatroom_setting", "weixin_chatroom_setting_detail.weixin_chatroom_setting_id = weixin_chatroom_setting.id").
+		Join("LEFT", "weixin", "weixin_chatroom_setting_detail.weixin_id = weixin.id").
+		Where("weixin_chatroom_setting_detail.weixin_id = ?", weixinId).
+		Get(detail)
+	if err != nil {
+		return nil, err
+	}
+	return detail, nil
+}

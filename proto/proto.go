@@ -171,6 +171,7 @@ type GetWeixinGroupMemberListReq struct {
 	GroupId int64 `json:"groupId"`
 }
 
+// liebian
 type GetLiebianPoolReq struct {
 	LiebianType int64 `json:"liebianType"`
 }
@@ -190,6 +191,7 @@ type GetResourcePoolReq struct {
 	WxType int64 `json:"wxType"`
 }
 
+// data statistic
 type GetDataStatisticalReq struct {
 	TypeId      int64 `json:"typeId"`
 	LiebianType int64 `json:"liebianType"`
@@ -199,4 +201,26 @@ type GetDataStatisticalReq struct {
 
 type GetLiebianErrorMsgReq struct {
 	LiebianType int64 `json:"liebianType"`
+}
+
+// chat room
+type ChatroomFullSetting struct {
+	ChatroomSetTimeAfterFull int64  `json:"chatroomSetTimeAfterFull"`
+	ChatroomFullMemberNum    int64  `json:"chatroomFullMemberNum"`
+	ChatroomNotice           string `json:"chatroomNotice"`
+	IfAutoChangeAccess       int64  `json:"ifAutoChangeAccess"`
+	ChatroomChangeOwner      string `json:"chatroomChangeOwner"`
+	IfAutoShowInContactBook  int64  `json:"ifAutoShowInContactBook"`
+}
+
+type ChatroomCommonSetting struct {
+	WelcomeReply            []MsgInfo           `json:"welcomeReply"`    // 新人进群
+	ScreenshotReply         []MsgInfo           `json:"screenshotReply"` // 截图
+	SysLoopReply            []MsgInfo           `json:"sysLoopReply"`    // 循环
+	Interval                int64               `json:"interval"`
+	WelcomeReplyLoopTime    int64               `json:"welcomeReplyLoopTime"`
+	ScreenshotReplyLoopTime int64               `json:"screenshotReplyLoopTime"`
+	SysLoopTime             int64               `json:"sysLoopTime"`
+	ChatroomRole            string              `json:"chatroomRole"` // chatroom-role-master: 主 chatroom-role-slave: 备
+	FullSetting             ChatroomFullSetting `json:"chatroomFullSetting"`
 }

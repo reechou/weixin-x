@@ -74,6 +74,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/get_weixin_friends_from_tag", self.GetWeixinFriendsFromTag)
 	http.HandleFunc("/weixin/delete_weixin_friend_tag", self.DeleteWxFriendTag)
 	http.HandleFunc("/weixin/create_selected_friends_task", self.CreateSelectedFriendsTask)
+	http.HandleFunc("/weixin/batch_create_selected_friends_task", self.BatchCreateSelectedFriendsTask)
 	http.HandleFunc("/weixin/create_timer_task", self.CreateTimerTask)
 	http.HandleFunc("/weixin/get_timer_task_list", self.GetTimerTaskList)
 	http.HandleFunc("/weixin/delete_timer_task", self.DeleteTimerTask)
@@ -94,6 +95,15 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/get_lianbian_pool", self.GetLiebianPool)
 	http.HandleFunc("/weixin/get_user_lianbian_pool", self.GetUserLiebianInfo)
 	http.HandleFunc("/weixin/get_liebian_error_msg", self.GetLiebianErrorMsgList)
+	
+	// chatroom setting
+	http.HandleFunc("/weixin/create_chatroom_setting", self.CreateWeixinChatroomSetting)
+	http.HandleFunc("/weixin/delete_chatroom_setting", self.DeleteWeixinChatroomSetting)
+	http.HandleFunc("/weixin/update_chatroom_setting", self.UpdateWeixinChatroomSetting)
+	http.HandleFunc("/weixin/get_all_chatroom_setting", self.GetAllChatroomSetting)
+	http.HandleFunc("/weixin/batch_create_chatroom_setting_detail", self.CreateWeixinChatroomSettingDetailList)
+	http.HandleFunc("/weixin/delete_chatroom_setting_detail", self.DeleteWeixinChatroomSettingDetail)
+	http.HandleFunc("/weixin/get_chatroom_setting", self.GetWeixinChatroomSetting)
 	
 	// monitor
 	http.HandleFunc("/monitor/get_data", self.GetDataStatistical)

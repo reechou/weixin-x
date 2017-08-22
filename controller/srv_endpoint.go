@@ -991,6 +991,53 @@ func (self *Logic) CreateSelectedFriendsTask(w http.ResponseWriter, r *http.Requ
 	}
 }
 
+func (self *Logic) BatchCreateSelectedFriendsTask(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	var req []proto.CreateSelectedFriendsTaskReq
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		holmes.Error("BatchCreateSelectedFriendsTask json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	var tasks []models.WeixinTaskList
+	for _, v := range req {
+		if v.TagId == 0 {
+			tasks = append(tasks, models.WeixinTaskList{
+				WeixinId:     v.WeixinId,
+				WeixinTaskId: v.WeixinTaskId,
+				Friends:      strings.Join(v.Friends, ","),
+			})
+		} else {
+			tagFriendList, err := models.GetWxTagFriendList(v.WeixinId, v.TagId, 0, 0)
+			if err != nil {
+				holmes.Error("get weixin tag friend list error: %v", err)
+				rsp.Code = proto.RESPONSE_ERR
+				return
+			}
+			var friends []string
+			for _, v := range tagFriendList {
+				friends = append(friends, v.WeixinContact.UserName)
+			}
+			tasks = append(tasks, models.WeixinTaskList{
+				WeixinId:     v.WeixinId,
+				WeixinTaskId: v.WeixinTaskId,
+				Friends:      strings.Join(friends, ","),
+			})
+		}
+	}
+	err := models.CreateWeixinTaskInfoList(tasks)
+	if err != nil {
+		holmes.Error("batch create weixin task list error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+}
+
 func (self *Logic) DeleteWxFriendTag(w http.ResponseWriter, r *http.Request) {
 	rsp := &proto.Response{Code: proto.RESPONSE_OK}
 	defer func() {
