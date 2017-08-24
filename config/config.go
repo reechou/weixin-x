@@ -39,6 +39,9 @@ type Config struct {
 
 	TimerTaskCron   string
 	DataCollectCron string
+	
+	DaytimeRestartWithUnreceivedMsg   int64
+	NighttimeRestartWithUnreceivedMsg int64
 
 	DefaultRobotHost string
 

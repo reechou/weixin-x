@@ -37,9 +37,10 @@ type KeywordSetting struct {
 }
 
 type WeixinSetting struct {
-	WeixinId int64            `json:"weixinId"`
-	Verify   VerifySetting    `json:"verifySetting"`
-	Keyword  []KeywordSetting `json:"keywordSetting"`
+	WeixinId                 int64            `json:"weixinId"`
+	Verify                   VerifySetting    `json:"verifySetting"`
+	Keyword                  []KeywordSetting `json:"keywordSetting"`
+	RestartWithUnreceivedMsg int64            `json:"restartWithUnreceivedMsg"`
 }
 
 // task

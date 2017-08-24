@@ -719,6 +719,19 @@ func (self *Logic) GetWeixinSetting(w http.ResponseWriter, r *http.Request) {
 			setting.Keyword = append(setting.Keyword, kSetting)
 		}
 	}
+	
+	nowHour := time.Now().Hour()
+	if nowHour >= 0 && nowHour <=6 {
+		setting.RestartWithUnreceivedMsg = self.cfg.NighttimeRestartWithUnreceivedMsg
+		if setting.RestartWithUnreceivedMsg == 0 {
+			setting.RestartWithUnreceivedMsg = 1800
+		}
+	} else {
+		setting.RestartWithUnreceivedMsg = self.cfg.DaytimeRestartWithUnreceivedMsg
+		if setting.RestartWithUnreceivedMsg == 0 {
+			setting.RestartWithUnreceivedMsg = 600
+		}
+	}
 
 	rsp.Data = setting
 }
