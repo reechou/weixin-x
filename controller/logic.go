@@ -8,6 +8,7 @@ import (
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/config"
 	"github.com/reechou/weixin-x/models"
+	"github.com/reechou/weixin-x/ext"
 )
 
 type Logic struct {
@@ -17,6 +18,8 @@ type Logic struct {
 	ttw *TimerTaskWorker
 	wmm *WeixinMonitorManager
 	dsw *DataStatisticsWorker
+	
+	alarm *ext.AlarmExt
 
 	cfg *config.Config
 }
@@ -124,7 +127,8 @@ func (self *Logic) Run() {
 		EnableDebug()
 	}
 	// start monitor
-	self.wmm = NewWeixinMonitorManager()
+	self.alarm = ext.NewAlarmExt(self.cfg)
+	self.wmm = NewWeixinMonitorManager(self.alarm, self.cfg)
 	self.dsw = NewDataStatisticsWorker(self.cfg)
 
 	holmes.Info("server starting on[%s]..", self.cfg.Host)

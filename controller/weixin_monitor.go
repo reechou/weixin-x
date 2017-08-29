@@ -6,6 +6,8 @@ import (
 
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/models"
+	"github.com/reechou/weixin-x/ext"
+	"github.com/reechou/weixin-x/config"
 )
 
 const (
@@ -15,18 +17,23 @@ const (
 const (
 	MONITOR_WEIXIN_ABNORMAL_WARN_MSG   = "[微信监控] 裂变Type[%d] 微信池 %v 出现异常，5分钟内未上报心跳，已自动下线。"
 	MONITOR_RESOURCE_ABNORMAL_WARN_MSG = "[微信监控] 裂变Type[%d] 资源池 %v 异常，已自动下线。"
+	MONITOR_WEIXIN_REMARK_MSG          = "微信异常下线，剩余数量: %d ，请及时处理。"
 )
 
 type WeixinMonitor struct {
 	LiebianType int64
+	alarm       *ext.AlarmExt
+	cfg         *config.Config
 
 	stop chan struct{}
 	done chan struct{}
 }
 
-func NewWeixinMonitor(liebianType int64) *WeixinMonitor {
+func NewWeixinMonitor(liebianType int64, alarm *ext.AlarmExt, cfg *config.Config) *WeixinMonitor {
 	wm := &WeixinMonitor{
 		LiebianType: liebianType,
+		alarm:       alarm,
+		cfg:         cfg,
 		stop:        make(chan struct{}),
 		done:        make(chan struct{}),
 	}
@@ -98,6 +105,20 @@ func (self *WeixinMonitor) check() {
 			Msg:         abnormalMsg,
 		}
 		models.CreateLiebianErrorMsg(errorMsg)
+		
+		var channels []string
+		channels = append(channels, ext.ALARM_CHANNEL_GZH)
+		if len(abnormalIds) >= 10 {
+			channels = append(channels, ext.ALARM_CHANNEL_SMS)
+		}
+		self.alarm.DoAlarm(&ext.AlarmReq{
+			AlarmType:   ext.ALARM_TYPE_WARN,
+			AlarmTime:   now,
+			AlarmMsg:    abnormalMsg,
+			AlarmRemark: fmt.Sprintf(MONITOR_WEIXIN_REMARK_MSG, healthNode),
+			Channels:    channels,
+			ToUsers:     self.cfg.MonitorUsers,
+		})
 	}
 	if len(resourceAbnormalIds) > 0 {
 		abnormalMsg := fmt.Sprintf(MONITOR_RESOURCE_ABNORMAL_WARN_MSG, self.LiebianType, resourceAbnormalIds)
@@ -107,5 +128,19 @@ func (self *WeixinMonitor) check() {
 			Msg:         abnormalMsg,
 		}
 		models.CreateLiebianErrorMsg(errorMsg)
+		
+		var channels []string
+		channels = append(channels, ext.ALARM_CHANNEL_GZH)
+		if len(resourceAbnormalIds) >= 10 {
+			channels = append(channels, ext.ALARM_CHANNEL_SMS)
+		}
+		self.alarm.DoAlarm(&ext.AlarmReq{
+			AlarmType:   ext.ALARM_TYPE_WARN,
+			AlarmTime:   now,
+			AlarmMsg:    abnormalMsg,
+			AlarmRemark: fmt.Sprintf(MONITOR_WEIXIN_REMARK_MSG, healthNode),
+			Channels:    channels,
+			ToUsers:     self.cfg.MonitorUsers,
+		})
 	}
 }

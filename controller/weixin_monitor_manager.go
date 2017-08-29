@@ -6,19 +6,25 @@ import (
 
 	"github.com/reechou/holmes"
 	"github.com/reechou/weixin-x/models"
+	"github.com/reechou/weixin-x/ext"
+	"github.com/reechou/weixin-x/config"
 )
 
 type WeixinMonitorManager struct {
 	sync.Mutex
 
 	weixinMonitorMap map[int64]*WeixinMonitor
+	alarm            *ext.AlarmExt
+	cfg              *config.Config
 
 	stop chan struct{}
 }
 
-func NewWeixinMonitorManager() *WeixinMonitorManager {
+func NewWeixinMonitorManager(alarm *ext.AlarmExt, cfg *config.Config) *WeixinMonitorManager {
 	wmm := &WeixinMonitorManager{
 		weixinMonitorMap: make(map[int64]*WeixinMonitor),
+		alarm:            alarm,
+		cfg:              cfg,
 		stop:             make(chan struct{}),
 	}
 	wmm.getLiebianTypeList()
@@ -60,7 +66,7 @@ func (self *WeixinMonitorManager) getLiebianTypeList() {
 	for _, v := range liebianTypeList {
 		_, ok := self.weixinMonitorMap[v.LiebianType]
 		if !ok {
-			weixinMonitor := NewWeixinMonitor(v.LiebianType)
+			weixinMonitor := NewWeixinMonitor(v.LiebianType, self.alarm, self.cfg)
 			self.weixinMonitorMap[v.LiebianType] = weixinMonitor
 		}
 	}

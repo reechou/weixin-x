@@ -16,6 +16,10 @@ type RobotControllerHost struct {
 	Host string
 }
 
+type BackendHost struct {
+	Host string
+}
+
 type DBInfo struct {
 	User   string
 	Pass   string
@@ -39,6 +43,7 @@ type Config struct {
 
 	TimerTaskCron   string
 	DataCollectCron string
+	MonitorUsers    []string
 	
 	DaytimeRestartWithUnreceivedMsg   int64
 	NighttimeRestartWithUnreceivedMsg int64
@@ -49,6 +54,7 @@ type Config struct {
 	RobotControllerHost
 	DBInfo
 	Tuling
+	AlarmBackend BackendHost
 }
 
 func NewConfig() *Config {
