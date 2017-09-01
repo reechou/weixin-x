@@ -286,7 +286,7 @@ func (self *Logic) CreateLiebianPool(w http.ResponseWriter, r *http.Request) {
 		ids = append(ids, v.WeixinId)
 	}
 	msgStr := fmt.Sprintf("裂变TYPE[%d] 上线资源池成员[%v]", req[0].LiebianType, ids)
-	oprMsg := &models.LiebianErrorMsg{
+	oprMsg := &models.LiebianOprMsg{
 		LiebianType: req[0].LiebianType,
 		Msg:         msgStr,
 	}
@@ -334,7 +334,7 @@ func (self *Logic) DeleteLiebianPool(w http.ResponseWriter, r *http.Request) {
 		ids = append(ids, v.WeixinId)
 	}
 	msgStr := fmt.Sprintf("裂变TYPE[%d] 下线资源池成员[%v]", liebianPoolList[0].LiebianType, ids)
-	oprMsg := &models.LiebianErrorMsg{
+	oprMsg := &models.LiebianOprMsg{
 		LiebianType: liebianPoolList[0].LiebianType,
 		Msg:         msgStr,
 	}
