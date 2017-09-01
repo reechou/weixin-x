@@ -269,6 +269,10 @@ func (self *Logic) CreateLiebianPool(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	
+	if len(req) == 0 {
+		return
+	}
 
 	err := models.CreateLiebianPoolList(req)
 	if err != nil {
@@ -276,6 +280,17 @@ func (self *Logic) CreateLiebianPool(w http.ResponseWriter, r *http.Request) {
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	
+	var ids []int64
+	for _, v := range req {
+		ids = append(ids, v.WeixinId)
+	}
+	msgStr := fmt.Sprintf("裂变TYPE[%d] 上线资源池成员[%v]", req[0].LiebianType, ids)
+	oprMsg := &models.LiebianErrorMsg{
+		LiebianType: req[0].LiebianType,
+		Msg:         msgStr,
+	}
+	models.CreateLiebianOprMsg(oprMsg)
 }
 
 func (self *Logic) DeleteLiebianPool(w http.ResponseWriter, r *http.Request) {
@@ -295,13 +310,35 @@ func (self *Logic) DeleteLiebianPool(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	holmes.Debug("delete liebian pool ids: %v", req)
-
-	err := models.DelLiebianPoolList(req)
+	
+	liebianPoolList, err := models.GetLiebianPoolListFromIds(req)
+	if err != nil {
+		holmes.Error("get liebian pool list from ids error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	err = models.DelLiebianPoolList(req)
 	if err != nil {
 		holmes.Error("delete liebian pool list error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}
+	
+	// create opr msg
+	if len(liebianPoolList) == 0 {
+		return
+	}
+	var ids []int64
+	for _, v := range liebianPoolList {
+		ids = append(ids, v.WeixinId)
+	}
+	msgStr := fmt.Sprintf("裂变TYPE[%d] 下线资源池成员[%v]", liebianPoolList[0].LiebianType, ids)
+	oprMsg := &models.LiebianErrorMsg{
+		LiebianType: liebianPoolList[0].LiebianType,
+		Msg:         msgStr,
+	}
+	models.CreateLiebianOprMsg(oprMsg)
 }
 
 func (self *Logic) GetLiebianPool(w http.ResponseWriter, r *http.Request) {
@@ -503,6 +540,31 @@ func (self *Logic) GetLiebianErrorMsgList(w http.ResponseWriter, r *http.Request
 	list, err := models.GetLiebianErrorMsgList(req.LiebianType)
 	if err != nil {
 		holmes.Error("get liebian error msg list error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	rsp.Data = list
+}
+
+func (self *Logic) GetLiebianOprMsgList(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.GetLiebianErrorMsgReq{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetLiebianOprMsgList json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	list, err := models.GetLiebianOprMsgList(req.LiebianType)
+	if err != nil {
+		holmes.Error("get liebian opr msg list error: %v", err)
 		rsp.Code = proto.RESPONSE_ERR
 		return
 	}

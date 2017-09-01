@@ -50,6 +50,7 @@ func InitDB(cfg *config.Config) {
 		new(QrcodeBind),
 		new(StatisticalData),
 		new(LiebianErrorMsg),
+		new(LiebianOprMsg),
 		new(WeixinChatroomSetting),
 		new(WeixinChatroomSettingDetail)); err != nil {
 		holmes.Fatal("Fail to sync database: %v", err)

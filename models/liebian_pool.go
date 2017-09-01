@@ -114,6 +114,16 @@ func GetLiebianPool(info *LiebianPool) (bool, error) {
 	return true, nil
 }
 
+func GetLiebianPoolListFromIds(ids []int64) ([]LiebianPool, error) {
+	var list []LiebianPool
+	err := x.In("id", ids).Find(&list)
+	if err != nil {
+		holmes.Error("get liebian pool list from ids error: %v", err)
+		return nil, err
+	}
+	return list, nil
+}
+
 type LiebianErrorMsg struct {
 	ID           int64  `xorm:"pk autoincr" json:"id"`
 	LiebianType  int64  `xorm:"not null default 0 int index" json:"liebianType"`
@@ -139,6 +149,36 @@ func GetLiebianErrorMsgList(liebianType int64) ([]LiebianErrorMsg, error) {
 	err := x.Where("liebian_type = ?", liebianType).Desc("created_at").Limit(30).Find(&list)
 	if err != nil {
 		holmes.Error("get liebian type error msg list error: %v", err)
+		return nil, err
+	}
+	return list, nil
+}
+
+type LiebianOprMsg struct {
+	ID           int64  `xorm:"pk autoincr" json:"id"`
+	LiebianType  int64  `xorm:"not null default 0 int index" json:"liebianType"`
+	Msg          string `xorm:"not null default '' varchar(512)" json:"msg"`
+	CreatedAt    int64  `xorm:"not null default 0 int index" json:"createAt"`
+}
+
+func CreateLiebianOprMsg(info *LiebianOprMsg) error {
+	now := time.Now().Unix()
+	info.CreatedAt = now
+	
+	_, err := x.Insert(info)
+	if err != nil {
+		holmes.Error("create liebian opr msg error: %v", err)
+		return err
+	}
+	
+	return nil
+}
+
+func GetLiebianOprMsgList(liebianType int64) ([]LiebianOprMsg, error) {
+	var list []LiebianOprMsg
+	err := x.Where("liebian_type = ?", liebianType).Desc("created_at").Limit(30).Find(&list)
+	if err != nil {
+		holmes.Error("get liebian type opr msg list error: %v", err)
 		return nil, err
 	}
 	return list, nil

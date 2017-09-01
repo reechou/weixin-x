@@ -98,6 +98,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/get_lianbian_pool", self.GetLiebianPool)
 	http.HandleFunc("/weixin/get_user_lianbian_pool", self.GetUserLiebianInfo)
 	http.HandleFunc("/weixin/get_liebian_error_msg", self.GetLiebianErrorMsgList)
+	http.HandleFunc("/weixin/get_liebian_opr_msg", self.GetLiebianOprMsgList)
 	
 	// chatroom setting
 	http.HandleFunc("/weixin/create_chatroom_setting", self.CreateWeixinChatroomSetting)
@@ -107,6 +108,7 @@ func (self *Logic) init() {
 	http.HandleFunc("/weixin/batch_create_chatroom_setting_detail", self.CreateWeixinChatroomSettingDetailList)
 	http.HandleFunc("/weixin/delete_chatroom_setting_detail", self.DeleteWeixinChatroomSettingDetail)
 	http.HandleFunc("/weixin/get_chatroom_setting", self.GetWeixinChatroomSetting)
+	http.HandleFunc("/weixin/get_chatroom_setting_from_weixin_id", self.GetWeixinChatroomSettingFromWeixinId)
 	
 	// monitor
 	http.HandleFunc("/monitor/get_data", self.GetDataStatistical)

@@ -198,3 +198,43 @@ func (self *Logic) GetWeixinChatroomSetting(w http.ResponseWriter, r *http.Reque
 	setting.ChatroomRole = chatroomSetting.WeixinChatroomSettingDetail.ChatroomRole
 	rsp.Data = setting
 }
+
+func (self *Logic) GetWeixinChatroomSettingFromWeixinId(w http.ResponseWriter, r *http.Request) {
+	rsp := &proto.Response{Code: proto.RESPONSE_OK}
+	defer func() {
+		WriteJSON(w, http.StatusOK, rsp)
+	}()
+	
+	if r.Method != "POST" {
+		return
+	}
+	
+	req := &proto.ReqID{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		holmes.Error("GetWeixinChatroomSettingFromWeixinId json decode error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	
+	chatroomSetting, err := models.GetWxChatroomSettingFromWeixin(req.Id)
+	if err != nil {
+		holmes.Error("get wx chatroom setting error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	
+	if chatroomSetting.WeixinChatroomSettingDetail.ID == 0 {
+		return
+	}
+	
+	var setting proto.ChatroomCommonSetting
+	err = json.Unmarshal([]byte(chatroomSetting.WeixinChatroomSetting.Setting), &setting)
+	if err != nil {
+		holmes.Error("json unmarshal chatroom setting reply error: %v", err)
+		rsp.Code = proto.RESPONSE_ERR
+		return
+	}
+	setting.ChatroomRole = chatroomSetting.WeixinChatroomSettingDetail.ChatroomRole
+	rsp.Data = setting
+}
