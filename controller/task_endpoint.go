@@ -232,6 +232,14 @@ func (self *Logic) transferTask(taskType int64, data string, friends []string) i
 			return nil
 		}
 		return task
+	case proto.TASK_ID_SCAN_QRCODE:
+		task := &proto.ScanQrcode{}
+		err := json.Unmarshal([]byte(data), task)
+		if err != nil {
+			holmes.Error("json unmarshal error: %v", err)
+			return nil
+		}
+		return task
 	}
 
 	return nil
@@ -339,7 +347,7 @@ func (self *Logic) GetTask(w http.ResponseWriter, r *http.Request) {
 				})
 			}
 		}
-		
+
 		if needExecTasks != nil && len(needExecTasks) > 0 {
 			err = models.UpdateWeixinTaskList(needExecTasks)
 			if err != nil {

@@ -55,6 +55,11 @@ type Task struct {
 	Data      interface{} `json:"data"`
 }
 
+type ScanQrcode struct {
+	Interval   int64    `json:"interval"`
+	QrcodeUrls []string `json:"qrcodeUrls"`
+}
+
 type LinkMsg struct {
 	Title      string `json:"title"`
 	Desc       string `json:"desc"`
